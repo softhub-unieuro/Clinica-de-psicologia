@@ -1,0 +1,239 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Clínica de Psicologia{% endblock title %}</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Fonte Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                },
+            },
+        }
+    </script>
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
+
+    {% block head %}{% endblock head %}
+</head>
+
+<body class="bg-gray-100 font-sans text-gray-800 overflow-x-hidden">
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-white border-b shadow-sm h-16 flex items-center px-4">
+        <div class="flex items-center gap-4 w-full">
+            <button id="mobile-menu-btn" aria-label="Abrir menu"
+                class="text-gray-700 md:hidden rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
+                <i class="bi bi-list text-2xl"></i>
+            </button>
+
+            <img src="{% static 'img/unieuro.png' %}" alt="Logotipo Unieuro" class="h-10 w-auto" />
+
+            <div class="border-l border-gray-300 h-8 mx-3"></div>
+
+            <div class="hidden md:block">
+                <h1 class="text-xl font-bold text-blue-700 leading-tight">Clínica de Psicologia</h1>
+                <p class="text-sm text-gray-600">Sistema de Gestão</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Overlay mobile -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/40 z-40 hidden"></div>
+
+    <!-- Sidebar Mobile -->
+    <nav id="sidebar-mobile"
+         class="fixed top-0 left-0 bottom-0 w-72 bg-white shadow-lg z-50 transform -translate-x-full transition-transform duration-300 flex flex-col justify-between">
+        <div>
+            <div class="flex justify-between items-center px-4 py-4 border-b">
+                <div class="flex items-center gap-3">
+                    <img src="{% static 'img/unieuro.png' %}" alt="Logotipo" class="h-8 w-auto" />
+                    <span class="font-bold text-blue-700 text-sm">Clínica de Psicologia</span>
+                </div>
+                <button id="close-sidebar" aria-label="Fechar menu"
+                        class="text-gray-500 hover:text-gray-700 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
+                    <i class="bi bi-x-lg text-xl"></i>
+                </button>
+            </div>
+
+            <ul class="space-y-1 p-4 text-sm">
+                <li>
+                    <a href="{% url 'redirect_dashboard' %}"
+                       class="flex items-center gap-3 p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors">
+                        <i class="bi bi-house-door w-5 text-center"></i><span>Início</span>
+                    </a>
+                </li>
+                
+                <!-- Menu Items Logic -->
+                {% if user.cargo == 'COORD' or user.cargo == 'SUPER' or user.cargo == 'ESTAG' or user.cargo == 'RESP_TEC' or user.cargo == 'SEC' %}
+                <li>
+                    <a href="{% url 'estagiario:consulta_inscritos' %}"
+                       class="flex items-center gap-3 p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors">
+                        <i class="bi bi-people w-5 text-center"></i><span>Seleção de Inscritos</span>
+                    </a>
+                </li>
+                {% endif %}
+                
+                {% if user.cargo == 'COORD' or user.cargo == 'SUPER' or user.cargo == 'RESP_TEC' %}
+                <li>
+                    <a href="{% url 'supervisor:lista_arquivados' %}"
+                       class="flex items-center gap-3 p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors">
+                        <i class="bi bi-archive w-5 text-center"></i><span>Arquivados</span>
+                    </a>
+                </li>
+                {% endif %}
+
+
+                {% if user.cargo == 'COORD' %}
+                <li>
+                    <a href="{% url 'coodernador:coord' %}"
+                       class="flex items-center gap-3 p-2 rounded-lg bg-gray-100 text-gray-900 border border-gray-300">
+                        <i class="bi bi-table w-5 text-center"></i><span>Painel Administrativo</span>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+
+        <ul class="border-t border-gray-200 p-4 text-sm">
+            <li>
+                <form action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="flex items-center gap-2 p-2 rounded-md text-gray-700 hover:bg-red-100 hover:text-red-600 transition-colors w-full">
+                        <i class="bi bi-box-arrow-right"></i><span>Sair</span>
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Layout principal -->
+    <div class="pt-16 flex">
+        <!-- Sidebar Desktop -->
+        <nav class="hidden md:flex flex-col fixed top-16 left-0 w-64 h-[calc(100vh-4rem)] bg-white shadow-md">
+            <div class="flex flex-col h-full">
+                <div class="flex items-center gap-3 px-4 py-4 border-b">
+                    <div class="h-10 w-10 rounded-full bg-gray-200 overflow-hidden flex items-center justify-center">
+                        <i class="bi bi-person-fill text-2xl text-gray-500"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold leading-tight">{{ user.nome_completo|default:user.matricula }}</p>
+                        <p class="text-xs text-gray-500">{{ user.get_cargo_display }}</p>
+                    </div>
+                </div>
+
+                <ul class="flex-1 px-3 py-3 text-sm space-y-1">
+                    <li>
+                        <a href="{% url 'redirect_dashboard' %}"
+                           class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100">
+                            <i class="bi bi-house-door w-5 text-center"></i><span>Início</span>
+                        </a>
+                    </li>
+                    
+                    <!-- Menu Items Logic (Desktop) -->
+                    {% if user.cargo == 'COORD' or user.cargo == 'SUPER' or user.cargo == 'ESTAG' or user.cargo == 'RESP_TEC' %}
+                    <li>
+                        <a href="{% url 'estagiario:consulta_inscritos' %}"
+                           class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100">
+                            <i class="bi bi-people w-5 text-center"></i><span>Seleção de Inscritos</span>
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    {% if user.cargo == 'COORD' or user.cargo == 'SUPER' or user.cargo == 'RESP_TEC' %}
+                    <li>
+                        <a href="{% url 'supervisor:lista_arquivados' %}"
+                           class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100">
+                            <i class="bi bi-archive w-5 text-center"></i><span>Arquivados</span>
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    {% if user.cargo == 'RESP_TEC'%}
+                    <li>
+                        <a href="{% url 'resptecn:lista_supervisores' %}"
+                           class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100">
+                            <i class="bi bi-archive w-5 text-center"></i><span>Lista de supervisores</span>
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    {% if user.cargo == 'COORD' %}
+                    <li>
+                        <a href="{% url 'coodernador:coord' %}"
+                           class="flex items-center gap-3 px-3 py-2 rounded-lg {% if request.resolver_match.url_name == 'coord' %}bg-gray-100 border border-gray-300{% else %}text-gray-700 hover:bg-gray-100{% endif %}">
+                            <i class="bi bi-table w-5 text-center"></i><span>Painel Administrativo</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+
+                <div class="border-t border-gray-200 px-3 py-3">
+                    <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="flex items-center gap-2 px-3 py-2 rounded-md text-gray-700 hover:bg-red-100 hover:text-red-600 text-sm w-full">
+                            <i class="bi bi-box-arrow-right"></i>
+                            <span>Sair</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main -->
+        <main class="flex-1 px-10 py-6 w-full md:ml-64">
+            {% block content %}
+            {% endblock %}
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const sidebarMobile = document.getElementById('sidebar-mobile');
+            const sidebarOverlay = document.getElementById('sidebar-overlay');
+            const closeSidebar = document.getElementById('close-sidebar');
+
+            const openSidebar = () => {
+                if (!sidebarMobile || !sidebarOverlay) return;
+                sidebarMobile.classList.remove('-translate-x-full');
+                sidebarOverlay.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            };
+
+            const closeSidebarMenu = () => {
+                if (!sidebarMobile || !sidebarOverlay) return;
+                sidebarMobile.classList.add('-translate-x-full');
+                sidebarOverlay.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            };
+
+            mobileMenuBtn?.addEventListener('click', openSidebar);
+            closeSidebar?.addEventListener('click', closeSidebarMenu);
+            sidebarOverlay?.addEventListener('click', closeSidebarMenu);
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeSidebarMenu();
+                }
+            });
+        });
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

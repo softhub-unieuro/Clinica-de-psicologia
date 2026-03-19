@@ -1,0 +1,319 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Consulta de Inscritos - Clínica Psicológica{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'uni-blue': '#003366', // Azul escuro do cabeçalho/botões
+                        'uni-gold': '#d4a017', // Dourado/Amarelo dos botões "Abrir"
+                        'uni-gold-dark': '#b8860b',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Estilo para o label que "corta" a borda do input */
+        .input-group {
+            position: relative;
+        }
+        .input-label {
+            position: absolute;
+            top: -10px;
+            left: 12px;
+            background-color: white;
+            padding: 0 5px;
+            font-size: 0.75rem;
+            color: #003366;
+            font-weight: 600;
+        }
+    </style>
+    <!-- jsPDF for PDF generation -->
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+{% endblock %}
+
+{% block content %}
+        <!-- Mensagens de Feedback -->
+        {% if messages %}
+        <div class="mb-6 space-y-2">
+            {% for message in messages %}
+            <div class="p-4 rounded-lg border {% if message.tags == 'error' %}bg-red-50 border-red-200 text-red-700{% else %}bg-green-50 border-green-200 text-green-700{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-xl font-bold text-uni-blue">Clínica Psicológica</h2>
+            <div class="relative">
+                <input type="text" class="bg-gray-100 rounded-md pl-4 pr-10 py-2 w-64 focus:outline-none focus:ring-1 focus:ring-uni-blue/30 text-sm">
+                <i class="fa fa-search absolute right-3 top-2.5 text-gray-400"></i>
+            </div>
+        </div>
+
+        <div class="mb-6">
+            <h1 class="text-2xl font-bold text-uni-blue mb-2">Consulta de Inscritos</h1>
+            <p class="text-gray-500 text-sm">Explore perfis, analise fichas de inscrição e escolha candidatos para acompanhamento terapêutico.</p>
+        </div>
+
+        <div class="mb-10 input-group">
+            <label class="input-label text-uni-blue">Digite o nome do Inscrito</label>
+            <div class="relative">
+                <input type="text" placeholder="Nome do Inscrito" class="w-full border border-uni-blue rounded-lg py-3 px-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-uni-blue/20">
+                <i class="fa fa-search absolute right-4 top-3.5 text-uni-blue text-lg"></i>
+            </div>
+        </div>
+
+        <!-- SEÇÃO: INSCRITOS ATRIBUÍDOS -->
+        <section class="mb-12">
+            <h3 class="text-xl font-bold text-uni-blue mb-1">Inscritos Atribuídos</h3>
+            <p class="text-xs text-gray-400 mb-4">Inscritos atribuídos ao Estagiário (Máximo 3)</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-4 text-sm font-bold text-gray-800 border-b border-gray-400 pb-2 mb-4 px-2">
+                <div class="md:col-span-4 pl-2">Nome</div>
+                <div class="md:col-span-2 text-center">Data</div>
+                <div class="md:col-span-2 text-center">Tipo de Atendimento</div>
+                <div class="md:col-span-2 text-center">Ficha</div>
+                <div class="md:col-span-2 text-center">Ação</div>
+            </div>
+
+            <div class="space-y-3">
+                {% for prontuario in prontuarios_atribuidos %}
+                <div class="bg-gray-100/80 rounded-lg px-4 py-3 grid grid-cols-1 md:grid-cols-12 gap-4 items-center shadow-sm">
+                    <div class="md:col-span-4 flex items-center gap-3">
+                        <i class="fa-regular fa-circle-user text-2xl text-gray-500"></i>
+                        <span class="font-medium text-gray-700 text-sm">
+                            {% if prontuario.paciente_comunidade %}
+                                {{ prontuario.paciente_comunidade.nomeinscrito }}
+                            {% else %}
+                                {{ prontuario.paciente_convenio.nomeinscrito }}
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="md:col-span-2 text-center text-sm text-gray-600">{{ prontuario.dth_abertura|date:"d/m/Y" }}</div>
+                    <div class="md:col-span-2 text-center text-sm text-gray-600">{{ prontuario.tipo_atendimento_label }}</div>
+                    <div class="md:col-span-2 text-center">
+                        <a href="{% url 'estagiario:dados_inscrito' prontuario.idprontuario %}" class="bg-uni-gold hover:bg-uni-gold-dark text-white text-xs font-bold py-1.5 px-6 rounded-full shadow-sm transition-colors inline-block">Abrir</a>
+                    </div>
+                    <div class="md:col-span-2 text-center">
+                        <button onclick="openEvolucaoModal('{{ prontuario.idprontuario }}')" class="bg-uni-blue hover:bg-blue-800 text-white text-xs font-bold py-1.5 px-4 rounded-full shadow-sm transition-colors w-full md:w-auto">Criar Prontuário</button>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-center py-4 text-gray-500">Nenhum inscrito atribuído.</div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- SEÇÃO: INSCRITOS COMUNIDADE -->
+        <section class="mb-8">
+            <h3 class="text-xl font-bold text-uni-blue mb-1">Inscritos Comunidade</h3>
+            <p class="text-xs text-gray-400 mb-4">Inscritos da comunidade disponíveis para seleção</p>
+
+             <div class="grid grid-cols-1 md:grid-cols-12 gap-4 text-sm font-bold text-gray-800 border-b border-gray-400 pb-2 mb-4 px-2">
+                <div class="md:col-span-4 pl-2">Nome</div>
+                <div class="md:col-span-2 text-center">Data</div>
+                <div class="md:col-span-2 text-center">Tipo de Atendimento</div>
+                <div class="md:col-span-2 text-center">Ficha</div>
+                <div class="md:col-span-2 text-center">Ação</div>
+            </div>
+
+            <div class="space-y-3">
+                {% for inscrito in lista_comunidade %}
+                 <div class="bg-gray-100/80 rounded-lg px-4 py-3 grid grid-cols-1 md:grid-cols-12 gap-4 items-center shadow-sm">
+                    <div class="md:col-span-4 flex items-center gap-3">
+                        <i class="fa-regular fa-circle-user text-2xl text-gray-500"></i>
+                        <span class="font-medium text-gray-700 text-sm">{{ inscrito.nomeinscrito }}</span>
+                    </div>
+                    <div class="md:col-span-2 text-center text-sm text-gray-600">{{ inscrito.dthinscricao|date:"d/m/Y" }}</div>
+                    <div class="md:col-span-2 text-center text-sm text-gray-600">{{ inscrito.tipo_atendimento_label }}</div>
+                    <div class="md:col-span-2 text-center flex gap-2 justify-center">
+                        <a href="{% url 'estagiario:dados_inscrito_detalhe' inscrito.tipo_origem inscrito.pk %}" class="bg-uni-gold hover:bg-uni-gold-dark text-white text-xs font-bold py-1.5 px-6 rounded-full shadow-sm transition-colors inline-block">Abrir</a>
+                    </div>
+                    <div class="md:col-span-2 text-center">
+                        {% if user.cargo == 'SUPER' or user.cargo == 'ESTAG' %}
+                        <form action="{% url 'estagiario:vincular_paciente' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="tipo" value="{{ inscrito.tipo_origem }}">
+                            <input type="hidden" name="id" value="{{ inscrito.pk }}">
+                            <button type="submit" class="bg-uni-blue hover:bg-blue-800 text-white text-xs font-bold py-1.5 px-6 rounded-full shadow-sm transition-colors w-full md:w-auto">Selecionar</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-center py-4 text-gray-500">Nenhum inscrito da comunidade disponível.</div>
+                {% endfor %}
+            </div>
+            
+            <!-- Paginação Comunidade -->
+            {% if page_obj_com.has_other_pages %}
+            <div class="mt-4 flex justify-center gap-2 text-sm">
+                {% if page_obj_com.has_previous %}
+                    <a href="?page_comunidade={{ page_obj_com.previous_page_number }}&page_convenio={{ page_obj_conv.number }}" class="px-3 py-1 bg-white border rounded hover:bg-gray-100 text-uni-blue">Anterior</a>
+                {% endif %}
+                <span class="px-3 py-1 text-gray-600">Página {{ page_obj_com.number }} de {{ page_obj_com.paginator.num_pages }}</span>
+                {% if page_obj_com.has_next %}
+                    <a href="?page_comunidade={{ page_obj_com.next_page_number }}&page_convenio={{ page_obj_conv.number }}" class="px-3 py-1 bg-white border rounded hover:bg-gray-100 text-uni-blue">Próximo</a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </section>
+
+        <!-- SEÇÃO: INSCRITOS CONVÊNIO -->
+        <section>
+            <h3 class="text-xl font-bold text-uni-blue mb-1">Inscritos Convênio</h3>
+            <p class="text-xs text-gray-400 mb-4">Inscritos de convênio disponíveis para seleção</p>
+
+             <div class="grid grid-cols-1 md:grid-cols-12 gap-4 text-sm font-bold text-gray-800 border-b border-gray-400 pb-2 mb-4 px-2">
+                <div class="md:col-span-4 pl-2">Nome</div>
+                <div class="md:col-span-2 text-center">Data</div>
+                <div class="md:col-span-2 text-center">Tipo de Atendimento</div>
+                <div class="md:col-span-2 text-center">Ficha</div>
+                <div class="md:col-span-2 text-center">Ação</div>
+            </div>
+
+            <div class="space-y-3">
+                {% for inscrito in lista_convenio %}
+                 <div class="bg-gray-100/80 rounded-lg px-4 py-3 grid grid-cols-1 md:grid-cols-12 gap-4 items-center shadow-sm">
+                    <div class="md:col-span-4 flex items-center gap-3">
+                        <i class="fa-regular fa-circle-user text-2xl text-gray-500"></i>
+                        <span class="font-medium text-gray-700 text-sm">{{ inscrito.nomeinscrito }}</span>
+                    </div>
+                    <div class="md:col-span-2 text-center text-sm text-gray-600">{{ inscrito.dthinscricao|date:"d/m/Y" }}</div>
+                    <div class="md:col-span-2 text-center text-sm text-gray-600">{{ inscrito.tipo_atendimento_label }}</div>
+                    <div class="md:col-span-2 text-center flex gap-2 justify-center">
+                        <a href="{% url 'estagiario:dados_inscrito_detalhe' inscrito.tipo_origem inscrito.pk %}" class="bg-uni-gold hover:bg-uni-gold-dark text-white text-xs font-bold py-1.5 px-6 rounded-full shadow-sm transition-colors inline-block">Abrir</a>
+                    </div>
+                    <div class="md:col-span-2 text-center">
+                        {% if user.cargo == 'SUPER' or user.cargo == 'ESTAG' %}
+                        <form action="{% url 'estagiario:vincular_paciente' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="tipo" value="{{ inscrito.tipo_origem }}">
+                            <input type="hidden" name="id" value="{{ inscrito.pk }}">
+                            <button type="submit" class="bg-uni-blue hover:bg-blue-800 text-white text-xs font-bold py-1.5 px-6 rounded-full shadow-sm transition-colors w-full md:w-auto">Selecionar</button>
+                        </form>
+                        {% endif %}
+                    </div>
+
+                </div>
+                {% empty %}
+                <div class="text-center py-4 text-gray-500">Nenhum inscrito de convênio disponível.</div>
+                {% endfor %}
+            </div>
+
+            <!-- Paginação Convênio -->
+            {% if page_obj_conv.has_other_pages %}
+            <div class="mt-4 flex justify-center gap-2 text-sm">
+                {% if page_obj_conv.has_previous %}
+                    <a href="?page_convenio={{ page_obj_conv.previous_page_number }}&page_comunidade={{ page_obj_com.number }}" class="px-3 py-1 bg-white border rounded hover:bg-gray-100 text-uni-blue">Anterior</a>
+                {% endif %}
+                <span class="px-3 py-1 text-gray-600">Página {{ page_obj_conv.number }} de {{ page_obj_conv.paginator.num_pages }}</span>
+                {% if page_obj_conv.has_next %}
+                    <a href="?page_convenio={{ page_obj_conv.next_page_number }}&page_comunidade={{ page_obj_com.number }}" class="px-3 py-1 bg-white border rounded hover:bg-gray-100 text-uni-blue">Próximo</a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </section>
+
+    <!-- Modal de Evolução (Mantido da versão anterior) -->
+    <div id="evolucaoModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 w-full max-w-lg">
+            <h3 class="text-xl font-bold text-[#003366] mb-4">Registrar Consulta (Evolução)</h3>
+            <form id="evolucaoForm" action="{% url 'estagiario:adicionar_evolucao' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="idprontuario" id="modalIdProntuario">
+                
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="data_atendimento">
+                        Data da Consulta
+                    </label>
+                    <input type="date" name="data_atendimento" id="data_atendimento" required
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="descricao">
+                        Comentário (Máx 500 caracteres)
+                    </label>
+                    {{ form_evolucao.descricao }}
+                    <p class="text-xs text-gray-500 mt-1 text-right"><span id="charCount">0</span>/500</p>
+                </div>
+                
+                <div class="flex justify-end gap-2">
+                    <button type="button" onclick="closeEvolucaoModal()" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="bg-[#003366] hover:bg-blue-900 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                        Salvar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        // Exporta os dados do inscrito em PDF (jsPDF)
+        function exportInscritoPdf(data) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+
+            const margin = 48;
+            let y = margin;
+
+            // Cabeçalho
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(16);
+            doc.text('Clínica Psicológica - Ficha de Inscrição', margin, y);
+            y += 24;
+
+            doc.setFontSize(11);
+            doc.setFont('helvetica', 'normal');
+            doc.text(`Data de emissão: ${new Date().toLocaleDateString('pt-BR')}`, margin, y);
+            y += 24;
+
+            // Seção principal
+            doc.setFont('helvetica', 'bold');
+            doc.text('Dados do Inscrito', margin, y);
+            y += 18;
+            doc.setFont('helvetica', 'normal');
+            doc.text(`Nome: ${data.nome}`, margin, y); y += 16;
+            doc.text(`Origem: ${data.origem === 'comunidade' ? 'Comunidade' : 'Convênio'}`, margin, y); y += 16;
+            doc.text(`Data de Inscrição: ${data.dataInscricao}`, margin, y); y += 16;
+            doc.text(`Tipo de Atendimento: ${data.tipoAtendimento}`, margin, y); y += 24;
+
+            // Rodapé
+            doc.setFontSize(9);
+            doc.text('Documento gerado automaticamente pelo sistema.', margin, doc.internal.pageSize.getHeight() - margin);
+
+            doc.save(`inscrito_${data.nome.replace(/\s+/g,'_')}.pdf`);
+        }
+        function openEvolucaoModal(idprontuario) {
+            document.getElementById('modalIdProntuario').value = idprontuario;
+            document.getElementById('evolucaoModal').classList.remove('hidden');
+            document.getElementById('evolucaoModal').classList.add('flex');
+        }
+
+        function closeEvolucaoModal() {
+            document.getElementById('evolucaoModal').classList.add('hidden');
+            document.getElementById('evolucaoModal').classList.remove('flex');
+        }
+
+        const textarea = document.getElementById('descricao');
+        const charCount = document.getElementById('charCount');
+        if (textarea) {
+            textarea.addEventListener('input', function() {
+                charCount.textContent = this.value.length;
+            });
+        }
+    </script>
+{% endblock %}

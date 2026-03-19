@@ -1,0 +1,302 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Centro Universitário Unieuro</title>
+    <link rel="shortcut icon" href="{% static 'img/logo.png' %}" type="image/png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom sticky-top shadow-sm">
+        <div class="container py-2">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="{% static 'img/unieuro.png' %}" alt="Unieuro" height="40" class="d-md-none">
+                <img src="{% static 'img/unieuro.png' %}" alt="Unieuro" height="50" class="d-none d-md-block">
+            </a>
+            <a href="{% url 'login' %}" class="btn btn-primary rounded-pill px-4 d-none d-md-block" style="background-color: #003d7a; border-color: #003d7a;">
+                <i class="bi bi-lock me-1"></i> Acesso Restrito
+            </a>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="py-4 py-md-5" style="background: linear-gradient(135deg, #f0f4f8 0%, #e6eef5 100%);">
+        <div class="container py-3 py-md-5">
+            <div class="row align-items-center g-4 g-md-5">
+                <div class="col-12 col-lg-6 order-lg-1 order-2">
+                    <h1 class="display-5 display-md-3 fw-bold mb-3 mb-md-4">
+                        Clínica de Psicologia
+                    </h1>
+                    <p class="fs-6 fs-md-5 text-muted mb-3 mb-md-4">
+                        Promovemos saúde mental e bem-estar através de atendimento psicológico humanizado, com ética,
+                        sigilo absoluto e respeito à sua individualidade.
+                    </p>
+                    <a href="#servicos"
+                        class="btn btn-md rounded-pill px-4 px-md-5 d-block d-md-inline-block text-white"
+                        style="background-color: #003d7a;">
+                        Agende sua Consulta
+                    </a>
+                </div>
+                <div class="col-lg-6 order-lg-2 order-1 text-center d-none d-lg-block">
+                    <img src="{% static 'img/psicologia.png' %}" alt="Atendimento Psicológico" class="img-fluid"
+                        style="max-width: 500px;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SERVIÇOS -->
+    <section id="servicos" class="py-4 py-md-5 bg-white">
+        <div class="container py-3 py-md-5">
+            <div class="text-center mb-4 mb-md-5">
+                <h2 class="display-6 display-md-5 fw-bold mb-2 mb-md-3" style="color: #1a2332;">Modalidades de
+                    Atendimento</h2>
+                <p class="fs-6 text-muted">Oferecemos diferentes formas de atendimento para melhor atendê-lo</p>
+            </div>
+            <div class="row g-3 g-md-4">
+                <div class="col-12 col-md-4">
+                    <div class="card border h-100 text-center p-3 p-md-4 shadow-sm">
+                        <div class="card-body">
+                            <i class="bi bi-people mb-2 mb-md-3" style="font-size: 2.5rem; color: #003d7a;"></i>
+                            <h5 class="fw-bold mb-2 mb-md-3" style="color: #1a2332;">Comunidade</h5>
+                            <p class="text-muted small mb-3 mb-md-4">Consultas com valores acessíveis, abertas à
+                                comunidade,
+                                priorizando inclusão e acolhimento.</p>
+                            <a href="{% url 'formulario:formulario_comunidade' %}" class="btn btn-sm rounded-pill px-3"
+                                style="color: #003d7a; border: 1px solid #003d7a;">Agendar</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="card border h-100 text-center p-3 p-md-4 shadow-sm"
+                        style="background-color: rgba(0, 61, 122, 0.08);">
+                        <div class="card-body">
+                            <i class="bi bi-heart-pulse mb-2 mb-md-3" style="font-size: 2.5rem; color: #003d7a;"></i>
+                            <h5 class="fw-bold mb-2 mb-md-3" style="color: #1a2332;">Convênios</h5>
+                            <p class="text-muted small mb-3 mb-md-4">Aceitamos os principais convênios para que você tenha mais comodidade e tranquilidade.</p>
+                            <a href="{% url 'formulario:formulario_convenio' %}" class="btn btn-sm rounded-pill px-3 text-white"
+                                style="background-color: #003d7a;">Agendar</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="card border h-100 text-center p-3 p-md-4 shadow-sm">
+                        <div class="card-body">
+                            <i class="bi bi-clipboard-check mb-2 mb-md-3"
+                                style="font-size: 2.5rem; color: #003d7a;"></i>
+                            <h5 class="fw-bold mb-2 mb-md-3" style="color: #1a2332;">Avaliação Psicológica</h5>
+                            <p class="text-muted small mb-3 mb-md-4">Avaliações especializadas e laudos técnicos
+                                seguindo
+                                rigorosos padrões éticos.</p>
+                            <a href="{% url 'formulario:formulario_teste' %}" class="btn btn-sm rounded-pill px-3"
+                                style="color: #003d7a; border: 1px solid #003d7a;">Agendar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SOBRE NÓS -->
+    <section class="py-4 py-md-5" style="background-color: #f0f4f8;">
+        <div class="container py-3 py-md-5">
+            <div class="row align-items-center g-4 g-md-5">
+
+                <div class="col-12 col-lg-6 mb-3 mb-lg-0">
+                    <h2 class="display-6 display-md-5 fw-bold mb-3 mb-md-4" style="color: #1a2332;">Sobre Nós</h2>
+                    <p class="text-muted mb-2 mb-md-3 small">
+                        A Clínica de Psicologia da Unieuro oferece <strong>atendimento supervisionado por profissionais
+                            qualificados</strong>, seguindo rigorosos padrões éticos.
+                    </p>
+                    <p class="text-muted mb-2 mb-md-3 small">
+                        Nossa abordagem é <strong>centrada no indivíduo</strong>, respeitando suas particularidades e
+                        promovendo autoconhecimento, equilíbrio emocional e qualidade de vida.
+                    </p>
+                    <p class="text-muted mb-3 mb-md-4 small">
+                        Acreditamos que cada pessoa merece <strong>cuidados personalizados</strong> para alcançar seus
+                        objetivos e superar desafios emocionais.
+                    </p>
+                </div>
+
+                <div class="col-12 col-lg-6">
+                    <div class="row g-2 g-md-3">
+                        <div class="col-6">
+                            <div class="bg-white rounded-3 p-3 h-100 shadow-sm text-center">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2"
+                                    style="width: 50px; height: 50px; background-color: rgba(0, 61, 122, 0.1);">
+                                    <i class="bi bi-shield-check fs-4" style="color: #003d7a;"></i>
+                                </div>
+                                <h6 class="fw-bold mb-1 small" style="color: #1a2332;">Sigilo Total</h6>
+                                <p class="text-muted mb-0" style="font-size: 0.75rem;">Confidencialidade garantida</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="bg-white rounded-3 p-3 h-100 shadow-sm text-center">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2"
+                                    style="width: 50px; height: 50px; background-color: rgba(0, 61, 122, 0.1);">
+                                    <i class="bi bi-people fs-4" style="color: #003d7a;"></i>
+                                </div>
+                                <h6 class="fw-bold mb-1 small" style="color: #1a2332;">Equipe Capacitada</h6>
+                                <p class="text-muted mb-0" style="font-size: 0.75rem;">Supervisão contínua</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="bg-white rounded-3 p-3 h-100 shadow-sm text-center">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2"
+                                    style="width: 50px; height: 50px; background-color: rgba(0, 61, 122, 0.1);">
+                                    <i class="bi bi-heart fs-4" style="color: #003d7a;"></i>
+                                </div>
+                                <h6 class="fw-bold mb-1 small" style="color: #1a2332;">Acolhimento</h6>
+                                <p class="text-muted mb-0" style="font-size: 0.75rem;">Escuta qualificada</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="bg-white rounded-3 p-3 h-100 shadow-sm text-center">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2"
+                                    style="width: 50px; height: 50px; background-color: rgba(0, 61, 122, 0.1);">
+                                    <i class="bi bi-award fs-4" style="color: #003d7a;"></i>
+                                </div>
+                                <h6 class="fw-bold mb-1 small" style="color: #1a2332;">Excelência</h6>
+                                <p class="text-muted mb-0" style="font-size: 0.75rem;">Qualidade e ética</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONVÊNIOS ACEITOS -->
+    <section class="py-4 py-md-5 bg-white">
+        <div class="container py-3 py-md-5">
+            <div class="text-center mb-4 mb-md-5">
+                <h2 class="display-6 fw-bold mb-2 mb-md-3" style="color: #1a2332;">Convênios Aceitos</h2>
+                <p class="small text-muted">Facilitamos seu acesso à saúde mental</p>
+            </div>
+            <div class="d-flex flex-wrap justify-content-center align-items-center gap-3 gap-md-5">
+                <img src="{% static 'img/amil.png' %}" alt="Amil" class="img-fluid" style="height: 32px;">
+                <img src="{% static 'img/assim-saude.png' %}" alt="Assim Saúde" class="img-fluid" style="height: 32px;">
+                <img src="{% static 'img/bradesco-saude.png' %}" alt="Bradesco Saúde" class="img-fluid" style="height: 32px;">
+                <img src="{% static 'img/Cemeru.png' %}" alt="Cemeru" class="img-fluid" style="height: 32px;">
+                <img src="{% static 'img/golden-cross.png' %}" alt="Golden Cross" class="img-fluid" style="height: 32px;">
+                <img src="{% static 'img/Integral-Saude.png' %}" alt="Integral Saúde" class="img-fluid" style="height: 32px;">
+                <img src="{% static 'img/LEVE.png' %}" alt="Leve Saúde" class="img-fluid" style="height: 32px;">
+                <img src="{% static 'img/notredame-intermedica.png' %}" alt="NotreDame Intermédica" class="img-fluid" style="height: 32px;">
+                <img src="{% static 'img/porto-saude.png' %}" alt="Porto Seguro" class="img-fluid" style="height: 32px;">
+                <img src="{% static 'img/Prevent-Senior.png' %}" alt="Prevent Senior" class="img-fluid" style="height: 32px;">
+                <img src="{% static 'img/sulAmerica.png' %}" alt="SulAmérica" class="img-fluid" style="height: 32px;">
+                <img src="{% static 'img/unimed.png' %}" alt="Unimed" class="img-fluid" style="height: 32px;">
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- PERGUNTAS FREQUENTES -->
+    <section class="py-4 py-md-5" style="background-color: #f0f4f8;">
+        <div class="container py-3 py-md-5">
+            <div class="text-center mb-4 mb-md-5">
+                <h2 class="display-6 display-md-5 fw-bold mb-2 mb-md-3" style="color: #1a2332;">Perguntas Frequentes
+                </h2>
+                <p class="small text-muted">Esclarecemos as principais dúvidas</p>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-12 col-lg-8">
+                    <div class="accordion" id="faqAccordion">
+                        <!-- FAQ 1 -->
+                        <div class="accordion-item border-0 mb-2 mb-md-3 rounded-3 shadow-sm">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed fw-semibold bg-white rounded-3 small"
+                                    type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                    Como posso agendar minha consulta?
+                                </button>
+                            </h2>
+                            <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body bg-white small">
+                                    Entre em contato pelo telefone <strong>(61) 3000-0000</strong> ou e-mail
+                                    <strong>psicologia@unieuro.edu.br</strong>. Atendimento de segunda a sexta-feira.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ 2 -->
+                        <div class="accordion-item border-0 mb-2 mb-md-3 rounded-3 shadow-sm">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed fw-semibold bg-white rounded-3 small"
+                                    type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                    Quais convênios médicos são aceitos?
+                                </button>
+                            </h2>
+                            <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body bg-white small">
+                                    Atendemos 12 planos: Amil, Assim Saúde, Bradesco, Cemeru, Golden Cross, Integral,
+                                    Leve,
+                                    NotreDame, Porto Seguro, Prevent Senior, SulAmérica e Unimed.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ 3 -->
+                        <div class="accordion-item border-0 mb-2 mb-md-3 rounded-3 shadow-sm">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed fw-semibold bg-white rounded-3 small"
+                                    type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                    É possível atendimento online?
+                                </button>
+                            </h2>
+                            <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body bg-white small">
+                                    Sim! Oferecemos <strong>telepsicologia</strong> com total sigilo, seguindo
+                                    diretrizes
+                                    do CFP com flexibilidade de horários.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ 4 -->
+                        <div class="accordion-item border-0 mb-2 mb-md-3 rounded-3 shadow-sm">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed fw-semibold bg-white rounded-3 small"
+                                    type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                                    Qual o valor das consultas?
+                                </button>
+                            </h2>
+                            <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body bg-white small">
+                                    Valores variam: <strong>social</strong> (acessível), <strong>convênios</strong>
+                                    (tabela do plano)
+                                    ou <strong>particular</strong>. Entre em contato para mais informações.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="text-white py-3" style="background-color: #002856;">
+        <div class="container">
+            <div class="row align-items-center text-center text-md-start">
+                <div class="col-md-6 mb-2 mb-md-0">
+                    <small>© 2025 Clínica de Psicologia Unieuro | Brasília - DF</small>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <small class="text-white-50">Desenvolvido pela <strong class="text-white">Fabrica de Software | SOFTHUB</strong></small>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

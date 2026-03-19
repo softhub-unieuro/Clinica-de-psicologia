@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Painel do Estagiário - Dashboard{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto p-6">
+    
+    <header class="mb-8">
+        <h1 class="text-3xl font-bold text-[#003366] mb-2">Painel do Estagiário de Psicologia</h1>
+        <p class="text-gray-500 mb-8">Acesse informações essenciais, acompanhe atividades e gerencie seu progresso.</p>
+
+        <div class="flex flex-col md:flex-row items-center gap-6 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+            <div class="w-24 h-24 bg-gray-300 rounded-full overflow-hidden flex-shrink-0 border-4 border-gray-100">
+                <!-- Placeholder avatar or user's photo if available -->
+                <img src="https://api.dicebear.com/9.x/avataaars/svg?seed={{ user.nome_completo|urlencode }}" alt="{{ user.nome_completo }}" class="w-full h-full object-cover">
+            </div>
+            <div class="text-center md:text-left">
+                <h2 class="text-2xl font-bold text-gray-800">{{ user.nome_completo }}</h2>
+                <p class="text-gray-500 mt-1">
+                    {{ user.get_cargo_display }} • {{ user.telefone|default:"Telefone não cadastrado" }} • {{ user.email }}
+                    {% if user.data_nascimento %} • {{ user.data_nascimento|timesince }} {% endif %}
+                </p>
+            </div>
+        </div>
+    </header>
+
+    <section class="mb-10">
+        <div class="flex justify-between items-center border-b pb-2 mb-4">
+            <h3 class="text-xl font-bold text-black">Meus Inscritos</h3>
+            <a href="{% url 'estagiario:consulta_inscritos' %}" class="bg-[#003366] hover:bg-blue-900 text-white text-sm font-bold py-2 px-4 rounded-full shadow-sm transition-colors">
+                <i class="fa fa-plus mr-2"></i>Consultar Novos Inscritos
+            </a>
+        </div>
+        
+        <div class="space-y-4">
+            {% for prontuario in prontuarios %}
+            <div class="bg-gray-100 hover:bg-white transition-all p-4 rounded-xl flex items-center justify-between shadow-sm hover:shadow-md border border-transparent hover:border-gray-200">
+                <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 flex items-center justify-center text-gray-500">
+                        <i class="fa-regular fa-folder-open text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-gray-800">
+                            {% if prontuario.paciente_comunidade %}
+                                {{ prontuario.paciente_comunidade.nomeinscrito }}
+                            {% else %}
+                                {{ prontuario.paciente_convenio.nomeinscrito }}
+                            {% endif %}
+                        </h4>
+                        <p class="text-xs text-gray-500">
+                            Prontuário #{{ prontuario.idprontuario }} | Início: {{ prontuario.dth_abertura|date:"d/m/Y" }}
+                        </p>
+                    </div>
+                </div>
+                <a href="{% url 'estagiario:dados_inscrito' prontuario.idprontuario %}" class="bg-[#003366] hover:bg-blue-800 text-white px-6 py-2 rounded-full font-medium text-sm transition-colors decoration-0">
+                    Abrir
+                </a>
+            </div>
+            {% empty %}
+            <div class="p-4 text-center text-gray-500 bg-gray-50 rounded-xl border border-gray-200">
+                Nenhum inscrito vinculado no momento. Clique em "Consultar Novos Inscritos" para começar.
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section>
+        <h3 class="text-xl font-bold text-center mb-6">Atendimentos da Semana</h3>
+        
+        <div class="bg-gray-50 rounded-xl overflow-hidden border border-gray-200 overflow-x-auto">
+            <table class="w-full text-left border-collapse min-w-[600px]">
+                <thead>
+                    <tr class="text-sm font-bold text-gray-700 border-b border-gray-200">
+                        <th class="p-4">Nome</th>
+                        <th class="p-4 text-center">Status</th>
+                        <th class="p-4 text-center">Última Atualização</th>
+                        <th class="p-4 text-center">Ações</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm">
+                    {% for atendimento in atendimentos %}
+                    <tr class="border-b border-gray-100 hover:bg-white">
+                        <td class="p-4 text-gray-600">{{ atendimento.paciente_nome }}</td>
+                        <td class="p-4 text-center">
+                            <span class="{% if atendimento.status == 'Pendente' %}bg-red-300 text-red-900{% else %}bg-blue-300 text-blue-900{% endif %} px-4 py-1 rounded-full text-xs font-bold shadow-sm">
+                                {{ atendimento.status }}
+                            </span>
+                        </td>
+                        <td class="p-4 text-center text-gray-500">{{ atendimento.data|date:"d/m/Y" }}</td>
+                        <td class="p-4 text-center">
+                            <button class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-1 rounded-full text-xs shadow-sm">
+                                {{ atendimento.acao_label|default:"Detalhes" }}
+                            </button>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="p-4 text-center text-gray-500">
+                            Nenhum atendimento agendado para esta semana.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+{% endblock %}

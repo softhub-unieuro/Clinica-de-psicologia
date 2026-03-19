@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard Responsável Técnica{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+    <div>
+        <h1 class="text-2xl font-bold text-uni-blue">Dashboard Operacional</h1>
+        <p class="text-gray-500 text-sm">Visão geral dos prontuários e atividades da clínica.</p>
+    </div>
+    <div class="flex gap-3">
+        <a href="{% url 'resptecn:lista_supervisores' %}" class="bg-uni-blue text-white px-4 py-2 rounded-lg text-sm font-medium shadow-sm hover:bg-blue-900 transition flex items-center gap-2">
+            <i class="fa fa-user-tie"></i> Supervisores
+        </a>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+        <div>
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Prontuários Ativos</p>
+            <h3 class="text-3xl font-bold text-uni-blue mt-1">{{ page_obj.paginator.count|default:prontuarios.count }}</h3>
+            <p class="text-xs text-green-500 mt-2 font-medium"><i class="fa fa-arrow-up"></i> Atualizado hoje</p>
+        </div>
+        <div class="w-12 h-12 bg-blue-50 text-uni-blue rounded-full flex items-center justify-center text-xl">
+            <i class="fa fa-folder-open"></i>
+        </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+        <div>
+            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Fila de Espera</p>
+            <h3 class="text-3xl font-bold text-uni-gold mt-1">{{ fila_espera_count }}</h3>
+            <p class="text-xs text-gray-400 mt-2">Inscritos aguardando triagem</p>
+        </div>
+        <div class="w-12 h-12 bg-yellow-50 text-uni-gold rounded-full flex items-center justify-center text-xl">
+            <i class="fa fa-user-clock"></i>
+        </div>
+    </div>
+</div>
+
+<div class="bg-white p-4 rounded-t-xl border border-gray-200 border-b-0 flex flex-col md:flex-row justify-between items-center gap-4">
+    <div class="relative w-full md:w-96">
+        <form method="get">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                <i class="fa fa-search text-gray-400"></i>
+            </span>
+            <input
+                type="text"
+                name="search"
+                value="{{ request.GET.search|default:'' }}"
+                class="w-full py-2 pl-10 pr-4 text-sm text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-uni-blue focus:border-transparent"
+                placeholder="Buscar paciente, estagiário ou supervisor..."
+            >
+        </form>
+    </div>
+
+    <div class="flex items-center gap-2">
+        <span class="text-sm text-gray-500 font-medium mr-2">Status:</span>
+        <select class="bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-uni-blue focus:border-uni-blue block p-2">
+            <option selected>Todos</option>
+            <option value="active">Ativos</option>
+            <option value="waiting">Em Espera</option>
+            <option value="archived">Arquivados</option>
+        </select>
+    </div>
+</div>
+
+<div class="bg-white border border-gray-200 rounded-b-xl overflow-hidden shadow-sm">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm text-gray-600">
+            <thead class="bg-gray-50 text-xs uppercase text-gray-500 font-bold border-b border-gray-200">
+                <tr>
+                    <th scope="col" class="px-6 py-4">Nº Prontuário</th>
+                    <th scope="col" class="px-6 py-4">Nome do Paciente</th>
+                    <th scope="col" class="px-6 py-4">Estagiário Resp.</th>
+                    <th scope="col" class="px-6 py-4">Supervisor</th>
+                    <th scope="col" class="px-6 py-4 text-center">Última Evolução</th>
+                    <th scope="col" class="px-6 py-4 text-center">Status</th>
+                    <th scope="col" class="px-6 py-4 text-center">Ações</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                {% for prontuario in prontuarios %}
+                <tr class="hover:bg-blue-50/30 transition-colors">
+                    <td class="px-6 py-4 font-mono text-xs font-bold text-uni-blue">{{ prontuario.idprontuario }}</td>
+                    <td class="px-6 py-4 font-medium text-gray-800">
+                        {% if prontuario.paciente_comunidade %}
+                            {{ prontuario.paciente_comunidade.nomeinscrito }}
+                        {% elif prontuario.paciente_convenio %}
+                            {{ prontuario.paciente_convenio.nomeinscrito }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4">{{ prontuario.estagiario.nome_completo }}</td>
+                    <td class="px-6 py-4">{{ prontuario.estagiario.supervisor_vinculado.nome_completo|default:"-" }}</td>
+                    <td class="px-6 py-4 text-center">
+                        {% with ultima_evolucao=prontuario.evolucoes.first %}
+                            {{ ultima_evolucao.data_atendimento|date:"d/m/Y"|default:"-" }}
+                        {% endwith %}
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                        {% if prontuario.status_ativo %}
+                            <span class="bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full">Ativo</span>
+                        {% else %}
+                            <span class="bg-gray-100 text-gray-600 text-xs font-semibold px-3 py-1 rounded-full">Inativo</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                        <a href="{% url 'estagiario:dados_inscrito' prontuario.pk %}" class="text-uni-blue hover:text-blue-800 mx-1" title="Ver Detalhes">
+                            <i class="fa fa-eye"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="px-6 py-8 text-center text-gray-500 italic">
+                        Nenhum prontuário encontrado.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if is_paginated %}
+    <div class="px-6 py-4 border-t border-gray-200 flex items-center justify-between bg-gray-50">
+        <span class="text-xs text-gray-500">Mostrando página <span class="font-bold">{{ page_obj.number }}</span> de <span class="font-bold">{{ page_obj.paginator.num_pages }}</span></span>
+        <div class="flex gap-2">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}&search={{ request.GET.search }}" class="px-3 py-1 text-xs font-medium text-gray-500 bg-white border border-gray-300 rounded hover:bg-gray-100">Anterior</a>
+            {% else %}
+                <button disabled class="px-3 py-1 text-xs font-medium text-gray-400 bg-gray-100 border border-gray-200 rounded cursor-not-allowed">Anterior</button>
+            {% endif %}
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}&search={{ request.GET.search }}" class="px-3 py-1 text-xs font-medium text-gray-500 bg-white border border-gray-300 rounded hover:bg-gray-100">Próximo</a>
+            {% else %}
+                <button disabled class="px-3 py-1 text-xs font-medium text-gray-400 bg-gray-100 border border-gray-200 rounded cursor-not-allowed">Próximo</button>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

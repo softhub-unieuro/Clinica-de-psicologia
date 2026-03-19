@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalhes do Supervisor{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<!-- Header com Informações do Supervisor -->
+<div class="flex flex-col md:flex-row items-center md:items-start gap-8 mb-12">
+    <!-- Avatar -->
+    <div class="relative group">
+        <div class="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-gray-100 shadow-sm">
+            <img src="https://api.dicebear.com/9.x/avataaars/svg?seed={{ supervisor.nome_completo|urlencode }}" alt="Supervisor" class="w-full h-full object-cover">
+        </div>
+        {% if supervisor.abordagem_teorica %}
+        <div class="absolute bottom-2 right-2 bg-uni-blue text-white text-xs font-bold px-3 py-1 rounded-full shadow-md border-2 border-white">
+            {{ supervisor.get_abordagem_teorica_display|truncatewords:1 }}
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Informações do Supervisor -->
+    <div class="text-center md:text-left flex-1 mt-2">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ supervisor.nome_completo }}</h1>
+        <p class="text-gray-500 text-lg mb-4">Supervisor Clínico
+            {% if supervisor.abordagem_teorica %}
+                • {{ supervisor.get_abordagem_teorica_display }}
+            {% endif %}
+        </p>
+        
+        <div class="flex flex-wrap justify-center md:justify-start gap-x-6 gap-y-2 text-sm text-gray-600">
+            <div class="flex items-center gap-2">
+                <i class="fa-regular fa-envelope text-uni-gold"></i>
+                <span>{{ supervisor.email }}</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-phone text-uni-gold"></i>
+                <span>{{ supervisor.telefone|default:"-" }}</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <i class="fa-regular fa-id-card text-uni-gold"></i>
+                <span>{{ supervisor.crp|default:"CRP não informado" }}</span>
+            </div>
+        </div>
+
+        <!-- Métricas -->
+        <div class="mt-6 flex justify-center md:justify-start gap-8 border-t border-gray-100 pt-6 w-full md:w-auto">
+            <div>
+                <span class="block text-2xl font-bold text-uni-blue">{{ estagiarios.count|stringformat:"02d" }}</span>
+                <span class="text-xs text-gray-400 uppercase font-bold tracking-wide">Estagiários</span>
+            </div>
+            <div>
+                <span class="block text-2xl font-bold text-gray-700">{{ total_pacientes }}</span>
+                <span class="text-xs text-gray-400 uppercase font-bold tracking-wide">Pacientes Totais</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Botão Voltar -->
+    <div class="mt-4 md:mt-0">
+        <a href="{% url 'resptecn:lista_supervisores' %}" class="flex items-center gap-2 bg-white border border-gray-300 text-gray-700 hover:text-uni-blue hover:border-uni-blue px-5 py-2.5 rounded-full font-medium transition-all shadow-sm text-sm">
+            <i class="fa fa-arrow-left"></i> Voltar para Lista
+        </a>
+    </div>
+</div>
+
+<!-- Tabela de Estagiários -->
+<section>
+    <div class="flex justify-between items-end mb-6">
+        <h2 class="text-xl font-bold text-gray-800">Estagiários Vinculados</h2>
+        
+        <div class="relative">
+            <i class="fa fa-search absolute left-3 top-3 text-gray-400 text-sm"></i>
+            <input type="text" id="searchInput" placeholder="Pesquisar estagiário..." class="pl-9 pr-4 py-2 bg-gray-50 border-b border-gray-200 focus:border-uni-blue focus:outline-none text-sm w-64 transition-colors bg-transparent">
+        </div>
+    </div>
+
+    <div class="w-full bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-200 bg-gray-50">
+                    <th class="py-4 px-6">Nome do Estagiário</th>
+                    <th class="py-4 px-6 text-center">Semestre/Matrícula</th>
+                    <th class="py-4 px-6 text-center">Pacientes Ativos</th>
+                    <th class="py-4 px-6 text-center">Nível</th>
+                    <th class="py-4 px-6 text-right">Ações</th>
+                </tr>
+            </thead>
+            <tbody class="text-sm divide-y divide-gray-100" id="estagiariosTable">
+                {% for estagiario in estagiarios %}
+                <tr class="hover:bg-gray-50 transition-colors group" data-nome="{{ estagiario.nome_completo|lower }}">
+                    <td class="py-5 px-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-bold overflow-hidden">
+                                <img src="https://api.dicebear.com/9.x/avataaars/svg?seed={{ estagiario.nome_completo|urlencode }}" alt="{{ estagiario.nome_completo }}" class="w-full h-full object-cover">
+                            </div>
+                            <span class="font-bold text-gray-700 group-hover:text-uni-blue transition-colors">{{ estagiario.nome_completo }}</span>
+                        </div>
+                    </td>
+                    <td class="py-5 px-6 text-center text-gray-600">
+                        {{ estagiario.semestre|default:"-" }} 
+                        <span class="text-xs text-gray-400 block">Mat: {{ estagiario.matricula }}</span>
+                    </td>
+                    <td class="py-5 px-6 text-center">
+                        {% if estagiario.num_pacientes > 0 %}
+                            <span class="bg-blue-50 text-uni-blue py-1 px-3 rounded-full text-xs font-bold">{{ estagiario.num_pacientes }} Paciente{{ estagiario.num_pacientes|pluralize:"s" }}</span>
+                        {% else %}
+                            <span class="bg-gray-100 text-gray-500 py-1 px-3 rounded-full text-xs font-bold">0 Pacientes</span>
+                        {% endif %}
+                    </td>
+                    <td class="py-5 px-6 text-center">
+                        {% if estagiario.num_pacientes > 0 %}
+                            <span class="text-green-600 font-bold text-xs">Regular</span>
+                        {% else %}
+                            <span class="text-yellow-600 font-bold text-xs">Pendente</span>
+                        {% endif %}
+                    </td>
+                    <td class="py-5 px-6 text-right">
+                        <a href="{% url 'supervisor:estagiario_detail' estagiario.pk %}" class="text-gray-400 hover:text-uni-blue font-semibold text-sm transition-colors mr-3">Visualizar</a>
+                        <button class="text-gray-400 hover:text-red-600 transition-colors" title="Remover vínculo" disabled>
+                            <i class="fa fa-unlink"></i>
+                        </button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="px-6 py-10 text-center text-gray-500">
+                        <i class="fa fa-users text-4xl text-gray-300 mb-3 block"></i>
+                        <p class="font-medium">Nenhum estagiário vinculado a este supervisor.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<script>
+// Busca em tempo real
+document.getElementById('searchInput').addEventListener('input', function(e) {
+    const searchTerm = e.target.value.toLowerCase();
+    const rows = document.querySelectorAll('#estagiariosTable tr[data-nome]');
+    
+    rows.forEach(row => {
+        const nome = row.getAttribute('data-nome');
+        if (nome.includes(searchTerm)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+});
+</script>
+{% endblock %}

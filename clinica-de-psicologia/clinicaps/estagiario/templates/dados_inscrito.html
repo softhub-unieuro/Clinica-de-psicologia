@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dados do Inscrito - Clínica Psicológica{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'uni-blue': '#003366',
+                        'uni-gold': '#d4a017',
+                        'uni-gold-dark': '#b8860b',
+                    }
+                }
+            }
+        }
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="flex justify-between items-center mb-8">
+        <h2 class="text-xl font-bold text-uni-blue">Dados do Inscrito</h2>
+        <div class="flex gap-2">
+            {% if user.cargo == 'SUPER' or user.cargo == 'RESP_TEC' %}
+                {% if prontuario %}
+                    <!-- Ações para Inscritos Vinculados -->
+                    <form action="{% url 'supervisor:finalizar_ciclo' prontuario.pk %}" method="post" onsubmit="return confirm('Tem certeza que deseja finalizar o ciclo? Isso irá gerar um PDF e arquivar o prontuário.');" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded shadow-sm transition-colors flex items-center gap-2">
+                            <i class="fa fa-check-circle"></i> Finalizar Ciclo
+                        </button>
+                    </form>
+                    
+                    <form action="{% url 'supervisor:desvincular_devolver' prontuario.pk %}" method="post" onsubmit="return confirm('Tem certeza que deseja desvincular e devolver à lista de espera?');" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded shadow-sm transition-colors flex items-center gap-2">
+                            <i class="fa fa-undo"></i> Desvincular e Devolver
+                        </button>
+                    </form>
+                {% else %}
+                    <!-- Ações para Inscritos Disponíveis (Sem Vínculo) -->
+                    <!-- Preciso passar o ID do inscrito e o tipo para a view de vincular -->
+                    <a href="{% url 'supervisor:vincular_inscrito' tipo_origem paciente.pk %}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow-sm transition-colors flex items-center gap-2">
+                        <i class="fa fa-link"></i> Vincular
+                    </a>
+                {% endif %}
+            {% endif %}
+
+            <button onclick="gerarPDF()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded shadow-sm transition-colors flex items-center gap-2">
+                <i class="fa fa-file-pdf"></i> Salvar PDF
+            </button>
+            <a href="{% if prontuario %}{% url 'estagiario:consulta_inscritos' %}{% else %}{% url 'estagiario:consulta_inscritos' %}{% endif %}" class="text-gray-500 hover:text-uni-blue flex items-center gap-2 px-4 py-2">
+                <i class="fa fa-arrow-left"></i> Voltar
+            </a>
+        </div>
+    </div>
+
+    <div id="conteudo-pdf" class="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden">
+        <div class="bg-uni-blue px-6 py-4 flex justify-between items-center">
+            <h3 class="text-white font-bold text-lg">{{ paciente.nomeinscrito }}</h3>
+            <span class="bg-white/20 text-white text-xs px-3 py-1 rounded-full">
+                {% if tipo_origem == 'comunidade' %}Comunidade{% else %}Convênio{% endif %}
+            </span>
+        </div>
+        
+        <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Dados Pessoais -->
+            <div>
+                <h4 class="text-uni-blue font-bold border-b border-gray-200 pb-2 mb-4">Dados Pessoais</h4>
+                <div class="space-y-3 text-sm">
+                    <p><span class="font-semibold text-gray-600">CPF:</span> {{ paciente.cpfinscrito }}</p>
+                    <p><span class="font-semibold text-gray-600">Data de Nascimento:</span> {{ paciente.dtnascimento|date:"d/m/Y" }}</p>
+                    <p><span class="font-semibold text-gray-600">Gênero:</span> {{ paciente.get_identidadegenero_display|default:paciente.identidadegenero|default:"-" }}</p>
+                    <p><span class="font-semibold text-gray-600">Estado Civil:</span> {{ paciente.get_estadocivilinscrito_display|default:paciente.estadocivilinscrito|default:"-" }}</p>
+                    <p><span class="font-semibold text-gray-600">Etnia:</span> {{ paciente.get_etnia_display|default:paciente.etnia|default:"-" }}</p>
+                    <p><span class="font-semibold text-gray-600">Religião:</span> {{ paciente.get_religiao_display|default:paciente.religiao|default:"-" }}</p>
+                </div>
+            </div>
+
+            <!-- Contato -->
+            <div>
+                <h4 class="text-uni-blue font-bold border-b border-gray-200 pb-2 mb-4">Contato</h4>
+                <div class="space-y-3 text-sm">
+                    <p><span class="font-semibold text-gray-600">Telefone:</span> {{ paciente.tellcellinscrito }}</p>
+                    <p><span class="font-semibold text-gray-600">Email:</span> {{ paciente.emailinscrito }}</p>
+                    <p><span class="font-semibold text-gray-600">Contato de Urgência:</span> {{ paciente.nomecontatourgencia|default:"-" }} ({{ paciente.contatourgencia|default:"-" }})</p>
+                </div>
+            </div>
+
+            <!-- Endereço -->
+            <div class="md:col-span-2">
+                <h4 class="text-uni-blue font-bold border-b border-gray-200 pb-2 mb-4">Endereço</h4>
+                <div class="space-y-3 text-sm">
+                    <p><span class="font-semibold text-gray-600">Endereço:</span> {{ endereco.rua|default:"-" }}</p>
+                    <p><span class="font-semibold text-gray-600">Bairro:</span> {{ endereco.bairro|default:"-" }}</p>
+                    <p><span class="font-semibold text-gray-600">Cidade:</span> {{ endereco.cidade|default:"-" }} - {{ endereco.uf|default:"-" }}</p>
+                    <p><span class="font-semibold text-gray-600">CEP:</span> {{ endereco.cep|default:"-" }}</p>
+                </div>
+            </div>
+
+            <!-- Informações Adicionais -->
+            <div class="md:col-span-2">
+                <h4 class="text-uni-blue font-bold border-b border-gray-200 pb-2 mb-4">Informações Clínicas</h4>
+                <div class="space-y-3 text-sm">
+                    <p><span class="font-semibold text-gray-600">Doenças/Condições:</span> {{ doencas_labels|join:", "|default:"-" }}</p>
+                    <p><span class="font-semibold text-gray-600">Medicamentos:</span> {{ medicamentos_labels|join:", "|default:"-" }}</p>
+                    <div class="mt-4">
+                        <p class="font-semibold text-gray-600 mb-1">Motivo da Procura:</p>
+                        <div class="bg-gray-50 p-3 rounded border border-gray-200 text-gray-700">
+                            {{ motivo_labels|join:", "|default:"-" }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Disponibilidade -->
+            <div class="md:col-span-2">
+                <h4 class="text-uni-blue font-bold border-b border-gray-200 pb-2 mb-4">Disponibilidade</h4>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-2 text-sm">
+                    {% for label in disponibilidade_labels %}
+                    <div class="bg-gray-100 px-3 py-2 rounded text-center border border-gray-200">
+                        <span class="font-semibold block text-uni-blue">{{ label }}</span>
+                    </div>
+                    {% empty %}
+                    <p class="text-gray-500 col-span-3">Nenhuma disponibilidade informada.</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Histórico de Evoluções -->
+            {% if prontuario %}
+            <div class="md:col-span-2 mt-6 pt-6 border-t border-gray-200">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="text-uni-blue font-bold text-lg">Histórico de Evoluções</h4>
+                    <a href="{% url 'estagiario:nova_evolucao' prontuario.pk %}" class="bg-uni-blue hover:bg-blue-800 text-white text-sm font-bold py-2 px-4 rounded transition-colors flex items-center gap-2">
+                        <i class="fa fa-plus"></i> Nova Evolução
+                    </a>
+                </div>
+                
+                <div class="space-y-4">
+                    {% for evolucao in evolucoes %}
+                    <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 shadow-sm">
+                        <div class="flex justify-between items-start mb-2 border-b border-gray-200 pb-2">
+                            <span class="font-bold text-uni-blue">
+                                <i class="far fa-calendar-alt mr-1"></i> {{ evolucao.data_atendimento|date:"d/m/Y" }}
+                            </span>
+                            <span class="text-xs text-gray-500" title="Registrado em {{ evolucao.dth_registro }}">
+                                Registrado em {{ evolucao.dth_registro|date:"d/m/Y H:i" }}
+                            </span>
+                        </div>
+                        <p class="text-gray-700 text-sm whitespace-pre-line mt-2">{{ evolucao.descricao }}</p>
+                    </div>
+                    {% empty %}
+                    <div class="text-center py-8 bg-gray-50 rounded-lg border border-dashed border-gray-300">
+                        <p class="text-gray-500 italic">Nenhuma evolução registrada para este prontuário.</p>
+                        <p class="text-sm text-gray-400 mt-1">Clique em "Nova Evolução" para adicionar o primeiro registro.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function gerarPDF() {
+        const element = document.getElementById('conteudo-pdf');
+        const opt = {
+            margin:       0.5,
+            filename:     'ficha_inscrito_{{ paciente.nomeinscrito|slugify }}.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2 },
+            jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+        };
+
+        // New Promise-based usage:
+        html2pdf().set(opt).from(element).save();
+    }
+</script>
+{% endblock %}

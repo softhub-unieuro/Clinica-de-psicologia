@@ -1,0 +1,169 @@
+{% load static %}
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Clínica Psicológica - Login</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" referrerpolicy="no-referrer" />
+
+  <style>
+    body { min-height: 100vh; }
+
+    /* Oculta as setas em inputs type="number" (WebKit) */
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+  <header class="flex justify-between items-center px-4 py-3 border-b border-gray-200">
+    <div class="flex items-center space-x-2">
+      <div>
+        <img src="{% static 'img/Logo1.png' %}" alt="Logo UNIEURO" class="h-15">
+      </div>
+    </div>
+
+    <h1 class="text-xl font-bold text-[#003366]">Clínica Psicológica</h1>
+
+    <div>
+      <a href="/" class="bg-white text-[#003366] font-semibold px-6 py-2 rounded-md shadow-md hover:bg-blue-100 no-underline inline-block">
+        Voltar
+      </a>
+    </div>
+  </header>
+
+  <main class="flex flex-1 flex-col md:flex-row">
+    <div class="w-full md:w-2/5 bg-[#002B5E] text-white p-12 flex flex-col justify-center items-center space-y-8">
+      <h2 class="text-3xl md:text-4xl font-bold leading-snug text-center">
+        Seja bem-vindo(a) à nossa clínica de psicologia!
+      </h2>
+
+      <p class="text-base leading-relaxed text-justify">
+        Para iniciarmos suas atividades como membro da equipe, pedimos que realize o seu registro no sistema da clínica. Esse cadastro é necessário para que possamos definir seu perfil de acesso e garantir uma boa integração entre todos os colaboradores.
+      </p>
+
+      <p class="text-base font-semibold text-center">
+        Por favor, acesse o Botão abaixo e preencha suas informações:
+      </p>
+
+      <a href="{% url 'cadastro_usuario' %}" class="w-fit px-8 py-2 bg-white text-[#003366] font-semibold rounded-md shadow-md hover:bg-blue-100 transition duration-300 no-underline">
+        Registre-se
+      </a>
+    </div>
+
+    <div class="flex-1 bg-white p-12 flex items-center justify-center">
+      <div class="flex flex-col items-center justify-center p-8 w-full max-w-sm mx-auto">
+        <div class="mb-4">
+          <img src="{% static 'img/Logo2.png' %}" alt="Logomarca UNIEURO" class="w-40 h-auto">
+        </div>
+
+        {% if form.errors %}
+          <div class="w-full bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4 text-sm" role="alert">
+            <strong class="font-bold">Erro!</strong>
+            <span class="block sm:inline">Matrícula ou senha inválidos.</span>
+          </div>
+        {% endif %}
+
+        <form method="post" class="w-full max-w-xs space-y-4" novalidate>
+          {% csrf_token %}
+          
+          <div>
+            <label for="id_username" class="sr-only">Matrícula</label>
+            <input type="text" id="id_username" name="username" placeholder="Digite sua Matrícula"
+                   class="w-full py-3 px-4 bg-gray-200 text-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-600"
+                   required autofocus>
+          </div>
+
+          <div class="relative">
+            <label for="id_password" class="sr-only">Senha</label>
+            <input type="password" id="id_password" name="password" placeholder="Senha"
+                   class="w-full py-3 px-4 bg-gray-200 text-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-600 pr-10"
+                   required>
+            <button type="button" id="togglePassword"
+                    class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer focus:outline-none"
+                    aria-label="Mostrar ou ocultar senha">
+              <i class="fas fa-eye-slash text-gray-600 text-lg hover:text-[#003366] transition-colors"></i>
+            </button>
+          </div>
+
+          <div class="text-right text-sm pt-1">
+            <span class="text-gray-600 mr-1">Esqueceu a senha?</span>
+            <a href="{% url 'verificar_codigo' %}" class="text-blue-600 font-semibold hover:underline">Clique aqui!</a>
+          </div>
+
+          <button type="submit"
+            class="relative w-full py-3 mt-6 bg-[#003366] text-white font-medium rounded-md border border-[#003366] shadow-md overflow-hidden hover:bg-[#002244] transition-colors">
+            <span class="relative z-10">Entrar</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <footer class="bg-[#003366] text-white text-sm py-3 px-8 flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
+    <p>© 2025 Clínica de Psicologia. Todos os direitos reservados.</p>
+
+    <div class="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-6">
+      <p class="flex items-center space-x-2">
+        <span>Nossos Contatos:</span>
+        <span class="font-bold">(61) 99235-5458</span>
+        <span class="flex items-center">
+            <i class="fas fa-phone-alt h-4 w-4"></i>
+        </span>
+      </p>
+
+      <div class="flex items-center space-x-3">
+        <span>Nossas Redes sociais:</span>
+
+        <a href="https://www.facebook.com/unieuronarede" target="_blank" class="hover:opacity-75 transition duration-150 ease-in-out" aria-label="Facebook">
+            <i class="fab fa-facebook fa-lg"></i>
+        </a>
+
+        <a href="https://www.youtube.com/@unieuro_oficial" target="_blank" class="hover:opacity-75 transition duration-150 ease-in-out" aria-label="YouTube">
+            <i class="fab fa-youtube fa-lg"></i>
+        </a>
+
+        <a href="https://www.instagram.com/unieuro_oficial/" target="_blank" class="hover:opacity-75 transition duration-150 ease-in-out" aria-label="Instagram">
+            <i class="fab fa-instagram fa-lg"></i>
+        </a>
+
+        <a href="https://x.com/UNIEURO_OFICIAL" target="_blank" class="hover:opacity-75 transition duration-150 ease-in-out" aria-label="X">
+            <i class="fab fa-twitter fa-lg"></i> </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('id_password');
+
+    if (togglePassword && passwordInput) {
+      togglePassword.addEventListener('click', function () {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+
+        const icon = this.querySelector('i');
+        if (type === 'text') {
+          icon.classList.remove('fa-eye-slash');
+          icon.classList.add('fa-eye');
+        } else {
+          icon.classList.remove('fa-eye');
+          icon.classList.add('fa-eye-slash');
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>

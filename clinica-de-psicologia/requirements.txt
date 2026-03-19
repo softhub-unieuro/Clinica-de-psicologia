@@ -1,0 +1,43 @@
+# ============================================
+# DJANGO CORE
+# ============================================
+asgiref==3.8.1
+Django==5.2.1
+sqlparse==0.5.3
+tzdata==2025.2
+
+# ============================================
+# BANCO DE DADOS
+# ============================================
+psycopg2==2.9.10
+
+# ============================================
+# CONFIGURAÇÃO E VALIDAÇÃO
+# ============================================
+python-dotenv==1.1.1
+validate-docbr==1.11.1
+
+# ============================================
+# UPLOAD E MANIPULAÇÃO DE IMAGENS/ARQUIVOS
+# ============================================
+Pillow==12.0.0
+
+# ============================================
+# INTERFACE ADMINISTRATIVA
+# ============================================
+django-jazzmin==3.0.1
+
+# ============================================
+# SEGURANÇA (Recomendado para produção)
+# ============================================
+# django-ratelimit==4.1.0  # Rate limiting para prevenir ataques de força bruta
+# django-axes==6.1.1  # Monitoramento de tentativas de login
+# django-csp==3.8  # Content Security Policy
+# cryptography==42.0.5  # Criptografia adicional
+
+# ============================================
+# DESENVOLVIMENTO E TESTES
+# ============================================
+# django-debug-toolbar==4.3.0  # Debug (apenas dev)
+# pytest-django==4.8.0  # Testes
+# coverage==7.4.4  # Cobertura de testes

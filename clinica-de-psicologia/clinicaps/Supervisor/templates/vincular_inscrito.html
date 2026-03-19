@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Vincular Inscrito a Estagiário</h3>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <h5>Dados do Inscrito</h5>
+                        <p><strong>Nome:</strong> {{ paciente.nomeinscrito }}</p>
+                        <p><strong>Tipo:</strong> {{ tipo|title }}</p>
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="estagiario" class="form-label">Selecione o Estagiário:</label>
+                            <select name="estagiario" id="estagiario" class="form-select" required>
+                                <option value="">-- Selecione --</option>
+                                {% for estagiario in estagiarios %}
+                                <option value="{{ estagiario.pk }}">
+                                    {{ estagiario.nome_completo }} ({{ estagiario.get_nivel_estagio_display|default:"-" }})
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'estagiario:consulta_inscritos' %}" class="btn btn-secondary me-md-2">Cancelar</a>
+                            <button type="submit" class="btn btn-primary">Vincular</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

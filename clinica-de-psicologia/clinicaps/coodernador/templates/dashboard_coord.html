@@ -1,0 +1,242 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Painel Administrativo - Clínica de Psicologia{% endblock %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+    <h2 class="text-2xl font-bold text-gray-800">Painel Administrativo</h2>
+    <div class="flex gap-3">
+        <a href="{% url 'cadastro_usuario' %}" class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
+            <i class="bi bi-person-plus"></i>
+            <span>Novo Usuário</span>
+        </a>
+        <a href="{% url 'admin:index' %}" class="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors shadow-sm">
+            <i class="bi bi-gear"></i>
+            <span>Configurações</span>
+        </a>
+    </div>
+</div>
+
+{% if messages %}
+    <div class="mb-6 space-y-2">
+    {% for message in messages %}
+        <div class="p-4 rounded-lg {% if message.tags == 'success' %}bg-green-50 text-green-700 border border-green-200{% elif message.tags == 'error' %}bg-red-50 text-red-700 border border-red-200{% else %}bg-blue-50 text-blue-700 border border-blue-200{% endif %}">
+            {{ message }}
+        </div>
+    {% endfor %}
+    </div>
+{% endif %}
+
+<!-- Cards de Resumo -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        <div class="flex justify-between items-start">
+            <div>
+                <p class="text-sm font-medium text-gray-500">Total de Usuários Ativos</p>
+                <h3 class="text-3xl font-bold text-gray-800 mt-2">{{ usuarios_ativos.count|default:"--" }}</h3>
+            </div>
+            <div class="p-2 bg-blue-50 rounded-lg text-blue-600">
+                <i class="bi bi-people text-xl"></i>
+            </div>
+        </div>
+        <div class="mt-4 flex items-center text-sm">
+            <span class="text-green-500 flex items-center gap-1 font-medium">
+                <i class="bi bi-arrow-up-short"></i>
+                <span>12%</span>
+            </span>
+            <span class="text-gray-400 ml-2">vs mês anterior</span>
+        </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        <div class="flex justify-between items-start">
+            <div>
+                <p class="text-sm font-medium text-gray-500">Usuários Inativos</p>
+                <!-- Placeholder logic, ideally passed from view -->
+                <h3 class="text-3xl font-bold text-gray-800 mt-2">{{ usuarios_inativos.count|default:"--" }}</h3>
+            </div>
+            <div class="p-2 bg-red-50 rounded-lg text-red-600">
+                <i class="bi bi-person-x text-xl"></i>
+            </div>
+        </div>
+        <div class="mt-4 flex items-center text-sm">
+            <span class="text-gray-500">--% do total</span>
+        </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        <div class="flex justify-between items-start">
+            <div>
+                <p class="text-sm font-medium text-gray-500">Pendentes</p>
+                <h3 class="text-3xl font-bold text-gray-800 mt-2">--</h3>
+            </div>
+            <div class="p-2 bg-orange-50 rounded-lg text-orange-600">
+                <i class="bi bi-clock-history text-xl"></i>
+            </div>
+        </div>
+        <div class="mt-4 flex items-center text-sm">
+            <span class="text-orange-500 font-medium">Aguardando aprovação</span>
+        </div>
+    </div>
+</div>
+
+<!-- Tabela de Usuários Ativos -->
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-8">
+    <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+        <h3 class="font-bold text-gray-800">Usuários Ativos</h3>
+        <div class="flex gap-2">
+            <div class="relative">
+                <input type="text" placeholder="Buscar usuário..." class="pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-64">
+                <i class="bi bi-search absolute left-3 top-2.5 text-gray-400"></i>
+            </div>
+            <button class="p-2 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50">
+                <i class="bi bi-filter"></i>
+            </button>
+        </div>
+    </div>
+    
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-gray-50 text-gray-600 text-sm uppercase tracking-wider">
+                    <th class="px-6 py-4 font-semibold border-b border-gray-100">Usuário</th>
+                    <th class="px-6 py-4 font-semibold border-b border-gray-100">Cargo</th>
+                    <th class="px-6 py-4 font-semibold border-b border-gray-100">Status</th>
+                    <th class="px-6 py-4 font-semibold border-b border-gray-100">Último Acesso</th>
+                    <th class="px-6 py-4 font-semibold border-b border-gray-100 text-right">Ações</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                {% for usuario in usuarios_ativos %}
+                <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4">
+                        <div class="flex items-center gap-3">
+                            <div class="h-10 w-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold uppercase">
+                                {{ usuario.nome_completo|slice:":2" }}
+                            </div>
+                            <div>
+                                <p class="font-medium text-gray-800">{{ usuario.nome_completo }}</p>
+                                <p class="text-xs text-gray-500">{{ usuario.email }}</p>
+                                <p class="text-xs text-gray-400">{{ usuario.matricula }}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="px-3 py-1 rounded-full text-xs font-medium 
+                            {% if usuario.cargo == 'COORD' %}bg-purple-100 text-purple-700 border border-purple-200
+                            {% elif usuario.cargo == 'SUPER' %}bg-blue-100 text-blue-700 border border-blue-200
+                            {% elif usuario.cargo == 'ESTAG' %}bg-green-100 text-green-700 border border-green-200
+                            {% else %}bg-gray-100 text-gray-700 border border-gray-200{% endif %}">
+                            {{ usuario.get_cargo_display }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4">
+                        {% if usuario.is_active %}
+                        <span class="flex items-center gap-1.5 text-sm text-green-600 font-medium">
+                            <span class="h-2 w-2 rounded-full bg-green-500"></span>
+                            Ativo
+                        </span>
+                        {% else %}
+                        <span class="flex items-center gap-1.5 text-sm text-red-600 font-medium">
+                            <span class="h-2 w-2 rounded-full bg-red-500"></span>
+                            Inativo
+                        </span>
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-500">
+                        {{ usuario.last_login|default:"Nunca acessou" }}
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <a href="{% url 'editar_usuario' usuario.pk %}" class="text-gray-400 hover:text-blue-600 transition-colors mx-1 inline-block">
+                            <i class="bi bi-pencil-square text-lg"></i>
+                        </a>
+                        <form action="{% url 'deletar_usuario' usuario.pk %}" method="post" class="inline-block" onsubmit="return confirm('Tem certeza que deseja excluir {{ usuario.nome_completo }}?');">
+                            {% csrf_token %}
+                            <button type="submit" class="text-gray-400 hover:text-red-600 transition-colors mx-1">
+                                <i class="bi bi-trash text-lg"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="px-6 py-4 text-center text-gray-500">Nenhum usuário encontrado.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="p-4 border-t border-gray-100 flex justify-between items-center">
+        <p class="text-sm text-gray-500">Mostrando {{ usuarios_ativos|length }} usuários ativos</p>
+        <!-- Pagination could go here if implemented in view -->
+    </div>
+</div>
+
+<!-- Tabela de Usuários Inativos -->
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+        <h3 class="font-bold text-gray-800">Usuários Inativos</h3>
+    </div>
+    
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-gray-50 text-gray-600 text-sm uppercase tracking-wider">
+                    <th class="px-6 py-4 font-semibold border-b border-gray-100">Usuário</th>
+                    <th class="px-6 py-4 font-semibold border-b border-gray-100">Cargo</th>
+                    <th class="px-6 py-4 font-semibold border-b border-gray-100">Status</th>
+                    <th class="px-6 py-4 font-semibold border-b border-gray-100">Data Desativação</th>
+                    <th class="px-6 py-4 font-semibold border-b border-gray-100 text-right">Ações</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                {% for usuario in usuarios_inativos %}
+                <tr class="hover:bg-gray-50 transition-colors opacity-75">
+                    <td class="px-6 py-4">
+                        <div class="flex items-center gap-3">
+                            <div class="h-10 w-10 rounded-full bg-gray-100 text-gray-500 flex items-center justify-center font-bold uppercase">
+                                {{ usuario.nome_completo|slice:":2" }}
+                            </div>
+                            <div>
+                                <p class="font-medium text-gray-800">{{ usuario.nome_completo }}</p>
+                                <p class="text-xs text-gray-500">{{ usuario.email }}</p>
+                                <p class="text-xs text-gray-400">{{ usuario.matricula }}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200">
+                            {{ usuario.get_cargo_display }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="flex items-center gap-1.5 text-sm text-red-600 font-medium">
+                            <span class="h-2 w-2 rounded-full bg-red-500"></span>
+                            Inativo
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-500">
+                        {{ usuario.dth_delete|default:"-" }}
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <!-- Ações para inativos (ex: reativar) podem ser adicionadas aqui -->
+                        <span class="text-gray-400 text-sm">Sem ações</span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="px-6 py-4 text-center text-gray-500">Nenhum usuário inativo.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="p-4 border-t border-gray-100 flex justify-between items-center">
+        <p class="text-sm text-gray-500">Mostrando {{ usuarios_inativos|length }} usuários inativos</p>
+    </div>
+</div>
+{% endblock %}
+

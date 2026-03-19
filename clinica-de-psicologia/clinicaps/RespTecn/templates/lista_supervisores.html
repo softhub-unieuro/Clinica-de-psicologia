@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+
+{% block title %}Gestão de Supervisores{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+    <div>
+        <h1 class="text-2xl font-bold text-uni-blue">Gestão de Supervisores</h1>
+        <p class="text-gray-500 text-sm">Gerencie a equipe clínica, visualize abordagens e alocação de estagiários.</p>
+    </div>
+    <a href="{% url 'resptecn:dashboard' %}" class="bg-uni-blue hover:bg-blue-800 text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-sm flex items-center gap-2 transition-colors">
+        <i class="fa fa-arrow-left"></i> Voltar ao Dashboard
+    </a>
+</div>
+
+<!-- Filtros -->
+<div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 mb-8">
+    <form method="get" class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+        <div class="md:col-span-5">
+            <label class="block text-xs font-bold text-gray-700 mb-1 ml-1">Buscar Supervisor</label>
+            <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                    <i class="fa fa-search text-gray-400"></i>
+                </span>
+                <input type="text" name="search" value="{{ request.GET.search|default:'' }}" class="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-uni-blue text-sm" placeholder="Nome ou CRP...">
+            </div>
+        </div>
+
+        <div class="md:col-span-4">
+            <label class="block text-xs font-bold text-gray-700 mb-1 ml-1">Abordagem Teórica</label>
+            <select name="abordagem" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-uni-blue text-sm text-gray-700">
+                <option value="">Todas as Abordagens</option>
+                <option value="TCC" {% if request.GET.abordagem == 'TCC' %}selected{% endif %}>Terapia Cognitivo-Comportamental</option>
+                <option value="Psicanalise" {% if request.GET.abordagem == 'Psicanalise' %}selected{% endif %}>Psicanálise</option>
+                <option value="Humanista" {% if request.GET.abordagem == 'Humanista' %}selected{% endif %}>Humanista / Fenomenológica</option>
+                <option value="Sistemica" {% if request.GET.abordagem == 'Sistemica' %}selected{% endif %}>Sistêmica</option>
+                <option value="AnaliseComportamento" {% if request.GET.abordagem == 'AnaliseComportamento' %}selected{% endif %}>Análise do Comportamento</option>
+            </select>
+        </div>
+
+        <div class="md:col-span-3">
+            <button type="submit" class="w-full bg-uni-blue hover:bg-blue-800 text-white font-medium py-2 rounded-lg text-sm transition-colors">
+                Aplicar Filtros
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Tabela de Supervisores -->
+<div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-gray-50 text-gray-500 text-xs uppercase font-bold border-b border-gray-200">
+                    <th class="px-6 py-4">Supervisor</th>
+                    <th class="px-6 py-4 text-center">Abordagem</th>
+                    <th class="px-6 py-4 text-center">Estagiários Vinculados</th>
+                    <th class="px-6 py-4 text-center">Status</th>
+                    <th class="px-6 py-4 text-center">Ações</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100 text-sm">
+                {% for supervisor in supervisores %}
+                <tr class="hover:bg-blue-50/30 transition-colors group">
+                    <td class="px-6 py-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-full overflow-hidden border border-gray-200 {% if not supervisor.is_active %}grayscale opacity-70{% endif %}">
+                                <img src="https://api.dicebear.com/9.x/avataaars/svg?seed={{ supervisor.nome_completo|urlencode }}" alt="Avatar" class="w-full h-full object-cover">
+                            </div>
+                            <div>
+                                <p class="font-bold {% if supervisor.is_active %}text-uni-blue{% else %}text-gray-600{% endif %} text-base">{{ supervisor.nome_completo }}</p>
+                                <p class="text-xs {% if supervisor.is_active %}text-gray-500{% else %}text-gray-400{% endif %} font-mono mt-0.5">{{ supervisor.crp|default:"CRP não informado" }}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                        {% if supervisor.abordagem_teorica == 'TCC' %}
+                            <span class="inline-block bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-semibold border border-blue-200">TCC</span>
+                        {% elif supervisor.abordagem_teorica == 'Psicanalise' %}
+                            <span class="inline-block bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs font-semibold border border-purple-200">Psicanálise</span>
+                        {% elif supervisor.abordagem_teorica == 'Humanista' %}
+                            <span class="inline-block bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-xs font-semibold border border-orange-200">Humanista</span>
+                        {% elif supervisor.abordagem_teorica == 'Sistemica' %}
+                            <span class="inline-block bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold border border-green-200">Sistêmica</span>
+                        {% elif supervisor.abordagem_teorica == 'AnaliseComportamento' %}
+                            <span class="inline-block bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-xs font-semibold border border-teal-200">Análise do Comportamento</span>
+                        {% else %}
+                            <span class="inline-block bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-xs font-semibold border border-gray-200">Não informada</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                        <div class="inline-flex items-center gap-2 {% if supervisor.num_estagiarios >= 15 %}bg-red-50 border-red-100{% else %}bg-gray-100 border-gray-200{% endif %} px-3 py-1 rounded-lg border" {% if supervisor.num_estagiarios >= 15 %}title="Capacidade Máxima"{% endif %}>
+                            <i class="fa fa-users {% if supervisor.num_estagiarios >= 15 %}text-red-400{% else %}text-gray-400{% endif %}"></i>
+                            <span class="font-bold {% if supervisor.num_estagiarios >= 15 %}text-red-600{% else %}text-gray-700{% endif %}">{{ supervisor.num_estagiarios|stringformat:"02d" }}</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                        {% if supervisor.is_active %}
+                            <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">Ativo</span>
+                        {% else %}
+                            <span class="bg-gray-200 text-gray-600 px-3 py-1 rounded-full text-xs font-bold">Inativo</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                        <a href="{% url 'resptecn:supervisor_detail' supervisor.pk %}" class="{% if supervisor.is_active %}text-uni-blue bg-blue-50 hover:bg-uni-blue hover:text-white{% else %}text-gray-600 bg-gray-100 hover:bg-gray-200{% endif %} px-4 py-2 rounded-lg text-xs font-bold transition-all shadow-sm inline-block">
+                            Ver Detalhes
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="px-6 py-10 text-center text-gray-500">
+                        <i class="fa fa-inbox text-4xl text-gray-300 mb-3 block"></i>
+                        <p class="font-medium">Nenhum supervisor encontrado.</p>
+                        <p class="text-xs text-gray-400 mt-1">Tente ajustar os filtros de busca.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Paginação -->
+    {% if is_paginated %}
+    <div class="bg-gray-50 px-6 py-4 border-t border-gray-200 flex justify-between items-center">
+        <span class="text-xs text-gray-500">Mostrando página <span class="font-bold">{{ page_obj.number }}</span> de <span class="font-bold">{{ page_obj.paginator.num_pages }}</span></span>
+        <div class="flex gap-2">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}&search={{ request.GET.search }}&abordagem={{ request.GET.abordagem }}" class="px-3 py-1 text-xs font-medium text-gray-500 bg-white border border-gray-300 rounded hover:bg-gray-100">Anterior</a>
+            {% else %}
+                <button disabled class="px-3 py-1 text-xs font-medium text-gray-500 bg-white border border-gray-300 rounded opacity-50 cursor-not-allowed">Anterior</button>
+            {% endif %}
+            
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}&search={{ request.GET.search }}&abordagem={{ request.GET.abordagem }}" class="px-3 py-1 text-xs font-medium text-gray-500 bg-white border border-gray-300 rounded hover:bg-gray-100">Próximo</a>
+            {% else %}
+                <button disabled class="px-3 py-1 text-xs font-medium text-gray-500 bg-white border border-gray-300 rounded opacity-50 cursor-not-allowed">Próximo</button>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

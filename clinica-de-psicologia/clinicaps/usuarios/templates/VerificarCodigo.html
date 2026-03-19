@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clínica Psicológica - Redefinição de Senha</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLMDJdZ2jGKYND3hM+eW8R249yYQ3b3fX4C6s+Gv8P0l5A5s5l5P5P5P5A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    body {
+      min-height: 100vh;
+    }
+
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+  </style>
+</head>
+
+<body class="flex flex-col">
+
+  <!-- HEADER -->
+  <header class="flex justify-between items-center px-4 py-3 border-b border-gray-200">
+    <div class="flex items-center space-x-2">
+      <div>
+        <img src="imagens/Logo1.png" alt="Logo UNIEURO" class="h-15">
+      </div>
+    </div>
+
+    <h1 class="text-xl font-bold text-[#003366]">Clínica Psicológica</h1>
+
+    <div>
+      <button
+        class="bg-white text-[#003366] font-semibold px-6 py-2 rounded-md shadow-md hover:bg-blue-100">
+        Voltar
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="flex flex-1">
+    <!-- LADO ESQUERDO -->
+    <div class="w-2/5 bg-[#002B5E] text-white p-12 flex flex-col justify-center space-y-8">
+      <h2 class="text-4xl font-bold leading-snug">
+        Solicitação de redefinição de senha
+      </h2>
+
+      <p class="text-base leading-relaxed">
+        Enviamos um código de redefinição de senha para o e-mail:
+        <br>
+        <span class="font-bold">ro*******il@exemplo.com</span>
+      </p>
+
+      <h3 class="text-2xl font-bold pt-4">O que fazer agora:</h3>
+
+      <ol class="list-decimal pl-5 text-base leading-relaxed space-y-2">
+        <li>Acesse sua caixa de entrada</li>
+        <li>Procure pelo e-mail com o assunto "Código de redefinição de senha"</li>
+        <li>Copie o código de 6 dígitos</li>
+        <li>Volte aqui para continuar</li>
+      </ol>
+
+      <p class="text-base leading-relaxed pt-4">
+        Não encontrou? Verifique a pasta de <span class="font-bold">spam</span> ou
+        <span class="font-bold underline cursor-pointer">solicite um novo código</span>.
+      </p>
+
+      <!-- Botão solicitar novo código -->
+      <button
+        class="relative w-fit px-8 py-2 bg-white text-[#002B5E] font-semibold rounded-md border border-white shadow-md overflow-hidden">
+        <span class="relative z-10">Solicitar novo código</span>
+        <span class="absolute inset-0 bg-white/20 opacity-0 hover:opacity-100"></span>
+      </button>
+    </div>
+
+    <!-- LADO DIREITO -->
+    <div class="flex-1 bg-white p-12 flex items-center justify-center">
+      <div class="flex flex-col items-center justify-center p-8 w-full max-w-sm mx-auto">
+        <div class="mb-4">
+          <img src="imagens/Logo2.png" alt="Logomarca UNIEURO" class="w-40 h-auto">
+        </div>
+
+        <h2 class="text-2xl font-bold text-gray-800 mb-8">Código de acesso</h2>
+
+        <form class="w-full max-w-xs space-y-4">
+          <div>
+            <label for="codigoAcesso" class="sr-only">Código de Acesso</label>
+            <input type="text" id="codigoAcesso" name="codigoAcesso"
+              placeholder="Digite seu código de acesso"
+              class="w-full py-3 px-4 bg-gray-200 text-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-600"
+              required>
+          </div>
+
+          <!-- Botão Entrar -->
+          <button type="submit"
+            class="relative w-full py-3 bg-[#003366] text-white font-medium rounded-md border border-[#003366] shadow-md overflow-hidden">
+            <span class="relative z-10">Entrar</span>
+            <span class="absolute inset-0 bg-white/20 opacity-0 hover:opacity-100"></span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-[#003366] text-white text-sm py-3 px-8 flex justify-between items-center">
+    <p>© 2023 Clínica de Psicologia. Todos os direitos reservados.</p>
+
+    <div class="flex items-center space-x-6">
+      <p class="flex items-center space-x-2">
+        <span>Nossos Contatos:</span>
+        <span class="font-bold">(61) 99235-5458</span>
+        <img src="imagens/contato.png" alt="Ícone de Contato" class="h-5 w-5">
+      </p>
+
+      <div class="flex items-center space-x-3">
+        <span>Nossas Redes sociais:</span>
+
+        <a href="https://www.facebook.com/unieuronarede" target="_blank" aria-label="Facebook">
+          <img src="imagens/facebook.png" alt="Facebook" class="h-6 w-6 hover:opacity-75">
+        </a>
+
+        <a href="https://www.youtube.com/@unieuro_oficial" target="_blank" aria-label="YouTube">
+          <img src="imagens/youtube.png" alt="YouTube" class="h-6 w-6 hover:opacity-75">
+        </a>
+
+        <a href="https://www.instagram.com/unieuro_oficial/" target="_blank" aria-label="Instagram">
+          <img src="imagens/instagram.png" alt="Instagram" class="h-6 w-6 hover:opacity-75">
+        </a>
+
+        <a href="https://x.com/UNIEURO_OFICIAL" target="_blank" aria-label="X">
+          <img src="imagens/x.png" alt="X" class="h-6 w-6 hover:opacity-75">
+        </a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

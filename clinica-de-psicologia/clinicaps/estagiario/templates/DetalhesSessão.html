@@ -1,0 +1,147 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nova Evolução - Clínica Psicológica</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'uni-blue': '#003366',
+                        'uni-gold': '#b8860b',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans flex min-h-screen">
+
+    <aside class="w-64 bg-gray-50 border-r border-gray-200 hidden md:flex flex-col fixed h-full overflow-y-auto z-10">
+        <div class="p-6 flex items-center gap-3">
+            <div class="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center border-2 border-white shadow-sm overflow-hidden">
+                <img src="https://api.dicebear.com/9.x/avataaars/svg?seed={{ user.nome_completo|urlencode }}" alt="Avatar" class="w-full h-full object-cover">
+            </div>
+            <div>
+                <p class="text-sm font-bold text-gray-800">{{ user.nome_completo }}</p>
+                <p class="text-xs text-gray-500">{{ user.get_cargo_display }}</p>
+            </div>
+        </div>
+        <nav class="flex-1 px-4 space-y-2 text-sm text-gray-600 mt-4">
+            <a href="{% url 'estagiario:home' %}" class="flex items-center gap-3 p-3 hover:bg-gray-200 rounded-lg transition-colors"><i class="fa fa-home w-5 text-center"></i> Início</a>
+            <a href="#" class="flex items-center gap-3 p-3 bg-gray-200 font-bold text-black rounded-lg transition-colors"><i class="fa fa-folder w-5 text-center"></i> Prontuários</a>
+            <a href="{% url 'estagiario:consulta_inscritos' %}" class="flex items-center gap-3 p-3 hover:bg-gray-200 rounded-lg transition-colors"><i class="fa fa-user-plus w-5 text-center"></i> Seleção de Inscritos</a>
+            <a href="#" class="flex items-center gap-3 p-3 hover:bg-gray-200 rounded-lg transition-colors"><i class="fa fa-users w-5 text-center"></i> Consultar Pacientes</a>
+        </nav>
+    </aside>
+
+    <main class="flex-1 p-8 md:ml-64 w-full">
+        
+        <div class="flex flex-col md:flex-row justify-between items-center mb-8 border-b border-gray-200 pb-4 gap-4">
+            <div class="flex items-center gap-4">
+                <h2 class="text-2xl font-bold text-uni-blue">Nova Evolução</h2>
+            </div>
+            <a href="{% url 'estagiario:dados_inscrito' prontuario.pk %}" class="flex items-center gap-2 text-gray-600 hover:text-uni-blue transition-colors text-sm font-semibold">
+                <i class="fa fa-arrow-left"></i> Cancelar e Voltar
+            </a>
+        </div>
+
+        <div class="max-w-3xl mx-auto">
+            
+            <form action="." method="POST" class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 space-y-8">
+                {% csrf_token %}
+                
+                {% if form.errors %}
+                <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative" role="alert">
+                    <strong class="font-bold">Erro!</strong>
+                    <span class="block sm:inline">Verifique os campos abaixo.</span>
+                    {{ form.errors }}
+                </div>
+                {% endif %}
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs font-bold text-uni-blue mb-1 uppercase tracking-wide">Paciente</label>
+                        <div class="flex items-center gap-3 bg-gray-100 border border-gray-300 rounded-lg px-4 py-3 text-gray-600 cursor-not-allowed">
+                            <i class="fa-regular fa-user"></i>
+                            <span class="font-medium">{{ paciente_nome }}</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-uni-blue mb-1 uppercase tracking-wide">Data da Sessão</label>
+                        <div class="flex items-center gap-3 bg-gray-100 border border-gray-300 rounded-lg px-4 py-3 text-gray-600 cursor-not-allowed">
+                            <i class="fa-regular fa-calendar"></i>
+                            <span class="font-medium">Sessão do dia {{ data_hoje|date:"d/m/Y" }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="border-gray-100">
+
+                <div>
+                    <div class="flex justify-between items-end mb-2">
+                        <label for="relato" class="block text-sm font-bold text-gray-700">Relato da Sessão</label>
+                        
+                        <div class="text-xs text-uni-gold flex items-center gap-1">
+                            <i class="fa-regular fa-lightbulb"></i>
+                            <span>Seja objetivo. Foco na conduta.</span>
+                        </div>
+                    </div>
+
+                    <div class="relative">
+                        <!-- Renderização do campo do formulário Django -->
+                        {{ form.descricao }}
+                        
+                        <div class="absolute bottom-3 right-4 text-xs font-mono text-gray-400 bg-white px-2 rounded border border-gray-100">
+                            <span id="char-count" class="font-bold text-gray-600">0</span> / 500
+                        </div>
+                    </div>
+                    <p class="mt-2 text-xs text-gray-400">
+                        O limite de 500 caracteres incentiva a síntese técnica necessária para o prontuário.
+                    </p>
+                </div>
+
+                <div class="flex items-center justify-end gap-4 pt-4 border-t border-gray-100">
+                    <a href="{% url 'estagiario:dados_inscrito' prontuario.pk %}" class="px-6 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors">
+                        Cancelar
+                    </a>
+                    <button type="submit" class="px-8 py-2.5 rounded-lg text-sm font-bold text-white bg-uni-blue hover:bg-blue-800 shadow-md transition-all flex items-center gap-2">
+                        <i class="fa fa-save"></i> Registrar Evolução
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </main>
+
+    <script>
+        // Script do Contador de Caracteres
+        // O ID 'descricao' vem do widget do formulário Django definido em forms.py
+        const textArea = document.getElementById('descricao');
+        const charCountDisplay = document.getElementById('char-count');
+        const maxChars = 500;
+
+        if (textArea) {
+            textArea.addEventListener('input', function() {
+                const currentLength = this.value.length;
+                charCountDisplay.textContent = currentLength;
+
+                // Feedback visual: muda a cor quando chega perto do limite (90%)
+                if (currentLength >= 450) {
+                    charCountDisplay.classList.remove('text-gray-600');
+                    charCountDisplay.classList.add('text-red-600');
+                } else {
+                    charCountDisplay.classList.remove('text-red-600');
+                    charCountDisplay.classList.add('text-gray-600');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

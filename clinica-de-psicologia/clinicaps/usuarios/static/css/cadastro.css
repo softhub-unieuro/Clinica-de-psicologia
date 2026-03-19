@@ -1,0 +1,133 @@
+:root {
+            --primary-color: #002B5C; /* Azul Escuro Institucional */
+            --accent-color: #009CA6;  /* Turquesa (Detalhes) */
+            --bg-color: #f4f7f6;
+            --text-muted: #6c757d;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Card de Login */
+        .login-card {
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 43, 92, 0.15);
+            overflow: hidden;
+            width: 100%;
+            max-width: 450px;
+            border: none;
+        }
+
+        .login-header {
+            background-color: #fff;
+            padding: 40px 30px 20px;
+            text-align: center;
+        }
+
+        .logo-img {
+            max-width: 160px;
+            margin-bottom: 15px;
+        }
+
+        .login-header h4 {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .login-header p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .login-body {
+            padding: 10px 40px 40px;
+        }
+
+        /* Inputs */
+        .form-floating > .form-control {
+            border-radius: 12px;
+            border: 1px solid #dee2e6;
+            background-color: #fafafa;
+        }
+
+        .form-floating > .form-control:focus {
+            background-color: #fff;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 4px rgba(0, 156, 166, 0.1);
+        }
+
+        .form-floating > label {
+            color: #999;
+        }
+
+        /* Botão */
+        .btn-login {
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            font-weight: 600;
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+            width: 100%;
+            transition: all 0.3s;
+        }
+
+        .btn-login:hover {
+            background-color: #001f42;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 43, 92, 0.3);
+        }
+
+        /* Links e Rodapé do Card */
+        .links-action {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            margin-top: 15px;
+            margin-bottom: 25px;
+        }
+
+        .links-action a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .links-action a:hover {
+            text-decoration: underline;
+        }
+
+        .footer-text {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #aaa;
+            margin-top: 20px;
+            border-top: 1px solid #f0f0f0;
+            padding-top: 20px;
+        }
+
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 5px;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .contact-info img {
+            width: 20px;
+            height: 20px;
+        }

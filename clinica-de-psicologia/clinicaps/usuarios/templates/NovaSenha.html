@@ -1,0 +1,195 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clínica Psicológica - Nova Senha</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <style>
+        body { min-height: 100vh; }
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type="number"] { -moz-appearance: textfield; }
+    </style>
+</head>
+<body>
+
+    <header class="flex justify-between items-center px-4 py-3 border-b border-gray-200">
+        <div class="flex items-center space-x-2">
+            <img src="{% static 'img/Logo1.png' %}" alt="Logo UNIEURO" class="h-15">
+        </div>
+        <h1 class="text-xl font-bold text-[#003366]">Clínica Psicológica</h1>
+        <div>
+            <a href="{% url 'login' %}" class="bg-white text-[#003366] font-semibold px-6 py-2 rounded-md shadow-md hover:bg-blue-100 border border-gray-200 text-decoration-none">
+                Voltar
+            </a>
+        </div>
+    </header>
+
+    <main class="flex flex-1 flex-col md:flex-row min-h-[calc(100vh-80px)]">
+        
+        <div class="w-full md:w-2/5 bg-[#002B5E] text-white p-12 flex flex-col justify-center space-y-6">
+            <h2 class="text-4xl font-bold leading-snug">Orientações para criar sua nova senha</h2>
+            <p class="text-base leading-relaxed">Para garantir a segurança da sua conta, sua nova senha deve atender aos seguintes requisitos:</p>
+            
+            <ol class="list-decimal pl-5 text-base leading-relaxed space-y-1">
+                <li>Ter no mínimo 8 caracteres.</li>
+                <li>Conter pelo menos uma letra maiúscula (A-Z).</li>
+                <li>Conter pelo menos uma letra minúscula (a-z).</li>
+                <li>Incluir pelo menos um número (0-9).</li>
+                <li>Incluir pelo menos um caractere especial (@, #, $, %, &, *, etc).</li>
+            </ol>
+            
+            <p class="text-base leading-relaxed pt-4">
+                Após digitar sua nova senha, confirme-a no campo ao lado e clique em <span class="font-bold">Cadastrar</span> para concluir a atualização.
+            </p>
+
+            <p class="text-base leading-relaxed pt-2">
+                <span class="font-bold">Dica:</span> Evite usar informações pessoais e não compartilhe sua senha.
+            </p>
+        </div>
+
+        <div class="flex-1 bg-white p-12 flex items-center justify-center">
+            <div class="flex flex-col items-center justify-center p-8 w-full max-w-sm mx-auto">
+                
+                <div class="mb-4">
+                    <img src="{% static 'img/Logo2.png' %}" alt="Logomarca UNIEURO" class="w-40 h-auto"> 
+                </div>
+
+                <h2 class="text-2xl font-bold text-gray-800 mb-8">Nova senha</h2>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="w-full bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                            <span class="block sm:inline">{{ message }}</span>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="post" class="w-full max-w-xs space-y-4">
+                    {% csrf_token %}
+                    
+                    <div>
+                        <input type="password" id="novaSenha" name="novaSenha" placeholder="Digite nova senha" 
+                               class="w-full py-3 px-4 bg-gray-200 text-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-600"
+                               required>
+                    </div>
+                    
+                    <div>
+                        <input type="password" id="confirmaSenha" name="confirmaSenha" placeholder="Confirme a senha" 
+                               class="w-full py-3 px-4 bg-gray-200 text-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-600"
+                               required>
+                    </div>
+                    
+                    <div class="flex flex-col space-y-1 pt-4 text-sm text-gray-700">
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" id="reqMin8" disabled class="hidden">
+                            <span id="boxMin8" class="w-4 h-4 bg-gray-200 border border-gray-400 flex items-center justify-center transition duration-150 ease-in-out">
+                                <i id="iconMin8" class="fas fa-check text-white text-xs opacity-0"></i>
+                            </span>
+                            <span>Mínimo 8 caracteres</span>
+                        </label>
+                        
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" id="reqMaiuscula" disabled class="hidden">
+                            <span id="boxMaiuscula" class="w-4 h-4 bg-gray-200 border border-gray-400 flex items-center justify-center transition duration-150 ease-in-out">
+                                <i id="iconMaiuscula" class="fas fa-check text-white text-xs opacity-0"></i>
+                            </span>
+                            <span>Pelo menos 1 letra maiúscula (A-Z)</span>
+                        </label>
+                        
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" id="reqMinuscula" disabled class="hidden">
+                            <span id="boxMinuscula" class="w-4 h-4 bg-gray-200 border border-gray-400 flex items-center justify-center transition duration-150 ease-in-out">
+                                <i id="iconMinuscula" class="fas fa-check text-white text-xs opacity-0"></i>
+                            </span>
+                            <span>Pelo menos 1 letra minúscula (a-z)</span>
+                        </label>
+                        
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" id="reqNumero" disabled class="hidden">
+                            <span id="boxNumero" class="w-4 h-4 bg-gray-200 border border-gray-400 flex items-center justify-center transition duration-150 ease-in-out">
+                                <i id="iconNumero" class="fas fa-check text-white text-xs opacity-0"></i>
+                            </span>
+                            <span>Pelo menos 1 número (0-9)</span>
+                        </label>
+                        
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" id="reqEspecial" disabled class="hidden">
+                            <span id="boxEspecial" class="w-4 h-4 bg-gray-200 border border-gray-400 flex items-center justify-center transition duration-150 ease-in-out">
+                                <i id="iconEspecial" class="fas fa-check text-white text-xs opacity-0"></i>
+                            </span>
+                            <span>Pelo menos 1 caractere especial</span>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="relative w-full py-3 mt-6 bg-[#003366] text-white font-medium rounded-md border border-[#003366] shadow-md overflow-hidden hover:bg-[#002244] transition">
+                        <span class="relative z-10">Cadastrar Senha</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-[#003366] text-white text-sm py-3 px-8 flex flex-col md:flex-row justify-between items-center">
+        <p>© 2025 Clínica de Psicologia. Todos os direitos reservados.</p>
+        <div class="flex items-center space-x-6 mt-2 md:mt-0">
+            <div class="flex items-center space-x-3">
+                <span>Nossas Redes:</span>
+                <a href="#" class="hover:opacity-75"><i class="fab fa-facebook fa-lg"></i></a>
+                <a href="#" class="hover:opacity-75"><i class="fab fa-youtube fa-lg"></i></a>
+                <a href="#" class="hover:opacity-75"><i class="fab fa-instagram fa-lg"></i></a>
+                <a href="#" class="hover:opacity-75"><i class="fab fa-twitter fa-lg"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const novaSenhaInput = document.getElementById('novaSenha');
+
+        const reqs = [
+            { id: 'reqMin8', check: (s) => s.length >= 8, boxId: 'boxMin8', iconId: 'iconMin8' },
+            { id: 'reqMaiuscula', check: (s) => /[A-Z]/.test(s), boxId: 'boxMaiuscula', iconId: 'iconMaiuscula' },
+            { id: 'reqMinuscula', check: (s) => /[a-z]/.test(s), boxId: 'boxMinuscula', iconId: 'iconMinuscula' },
+            { id: 'reqNumero', check: (s) => /[0-9]/.test(s), boxId: 'boxNumero', iconId: 'iconNumero' },
+            { id: 'reqEspecial', check: (s) => /[@#$%^&*-]/.test(s), boxId: 'boxEspecial', iconId: 'iconEspecial' },
+        ];
+        
+        const elements = {};
+        reqs.forEach(r => {
+            elements[r.id] = document.getElementById(r.id);
+            elements[r.boxId] = document.getElementById(r.boxId);
+            elements[r.iconId] = document.getElementById(r.iconId);
+        });
+
+        function checkPasswordRequirements() {
+            const senha = novaSenhaInput.value;
+            
+            reqs.forEach(r => {
+                const isMet = r.check(senha);
+                elements[r.id].checked = isMet;
+                
+                const box = elements[r.boxId];
+                const icon = elements[r.iconId];
+
+                // Tailwind Toggle Logic
+                if(isMet) {
+                    box.classList.remove('bg-gray-200', 'border-gray-400');
+                    box.classList.add('bg-[#003366]', 'border-[#003366]');
+                    icon.classList.remove('opacity-0');
+                    icon.classList.add('opacity-100');
+                } else {
+                    box.classList.add('bg-gray-200', 'border-gray-400');
+                    box.classList.remove('bg-[#003366]', 'border-[#003366]');
+                    icon.classList.add('opacity-0');
+                    icon.classList.remove('opacity-100');
+                }
+            });
+        }
+
+        novaSenhaInput.addEventListener('input', checkPasswordRequirements);
+    </script>
+</body>
+</html>
