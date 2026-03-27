@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load usuario_filters %}  <!-- Carrega os filtros personalizados -->
 
 {% block title %}Dados do Inscrito - Clínica Psicológica{% endblock %}
 
@@ -43,7 +44,6 @@
                     </form>
                 {% else %}
                     <!-- Ações para Inscritos Disponíveis (Sem Vínculo) -->
-                    <!-- Preciso passar o ID do inscrito e o tipo para a view de vincular -->
                     <a href="{% url 'supervisor:vincular_inscrito' tipo_origem paciente.pk %}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow-sm transition-colors flex items-center gap-2">
                         <i class="fa fa-link"></i> Vincular
                     </a>
@@ -62,9 +62,11 @@
     <div id="conteudo-pdf" class="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden">
         <div class="bg-uni-blue px-6 py-4 flex justify-between items-center">
             <h3 class="text-white font-bold text-lg">{{ paciente.nomeinscrito }}</h3>
-            <span class="bg-white/20 text-white text-xs px-3 py-1 rounded-full">
-                {% if tipo_origem == 'comunidade' %}Comunidade{% else %}Convênio{% endif %}
-            </span>
+            <div class="flex gap-2">
+                <span class="bg-white/20 text-white text-xs px-3 py-1 rounded-full">
+                    {% if tipo_origem == 'comunidade' %}Comunidade{% else %}Convênio{% endif %}
+                </span>
+            </div>
         </div>
         
         <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -72,7 +74,11 @@
             <div>
                 <h4 class="text-uni-blue font-bold border-b border-gray-200 pb-2 mb-4">Dados Pessoais</h4>
                 <div class="space-y-3 text-sm">
-                    <p><span class="font-semibold text-gray-600">CPF:</span> {{ paciente.cpfinscrito }}</p>
+                    <p>
+                        <span class="font-semibold text-gray-600">CPF:</span> 
+                        <!-- CPF censurado para TODOS os usuários -->
+                        <span class="font-mono">{{ paciente.cpfinscrito|censurar_cpf }}</span>
+                    </p>
                     <p><span class="font-semibold text-gray-600">Data de Nascimento:</span> {{ paciente.dtnascimento|date:"d/m/Y" }}</p>
                     <p><span class="font-semibold text-gray-600">Gênero:</span> {{ paciente.get_identidadegenero_display|default:paciente.identidadegenero|default:"-" }}</p>
                     <p><span class="font-semibold text-gray-600">Estado Civil:</span> {{ paciente.get_estadocivilinscrito_display|default:paciente.estadocivilinscrito|default:"-" }}</p>
@@ -101,6 +107,28 @@
                     <p><span class="font-semibold text-gray-600">CEP:</span> {{ endereco.cep|default:"-" }}</p>
                 </div>
             </div>
+
+            <!-- Dados do Responsável (se houver) -->
+            {% if paciente.nomeresp %}
+            <div class="md:col-span-2">
+                <h4 class="text-uni-blue font-bold border-b border-gray-200 pb-2 mb-4">Dados do Responsável</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div class="space-y-3">
+                        <p><span class="font-semibold text-gray-600">Nome:</span> {{ paciente.nomeresp }}</p>
+                        <p><span class="font-semibold text-gray-600">Grau Parentesco:</span> {{ paciente.grauresp|default:"-" }}</p>
+                        <p><span class="font-semibold text-gray-600">Estado Civil:</span> {{ paciente.estadocivilresp|default:"-" }}</p>
+                    </div>
+                    <div class="space-y-3">
+                        <p><span class="font-semibold text-gray-600">CPF:</span>
+                            <!-- CPF do responsável censurado para TODOS -->
+                            {{ paciente.cpfresp|censurar_cpf|default:"-" }}
+                        </p>
+                        <p><span class="font-semibold text-gray-600">Telefone:</span> {{ paciente.tellcellresp|default:"-" }}</p>
+                        <p><span class="font-semibold text-gray-600">Email:</span> {{ paciente.emailresp|default:"-" }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
 
             <!-- Informações Adicionais -->
             <div class="md:col-span-2">
@@ -165,6 +193,8 @@
             {% endif %}
         </div>
     </div>
+
+    <!-- Rodapé removido - sem aviso de censura -->
 {% endblock %}
 
 {% block scripts %}
