@@ -58,6 +58,7 @@ class Prontuario(models.Model):
         db_table = 'prontuario'
         verbose_name = 'Prontuário (Vínculo)'
         verbose_name_plural = 'Prontuários'
+        ordering = ['-dth_abertura']
         indexes = [
             models.Index(fields=['estagiario', 'status_ativo'], name='idx_pront_estag_status'),
             models.Index(fields=['status_ativo'], name='idx_pront_status'),
