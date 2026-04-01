@@ -1,0 +1,81 @@
+# 🏥 Sistema de Gestão — Clínica de Psicologia (README 2.0)
+
+Sistema web desenvolvido em Django para gestão de clínica de psicologia, com correções e instruções atualizadas para execução via Docker.
+
+---
+
+## 🔧 O que foi feito em termos de Docker para resolver o problema
+
+O erro ocorria devido a migrações inconsistentes no banco de dados (PostgreSQL em container), onde `admin.0001_initial` foi aplicada antes da dependência `usuarios.0001_initial`.
+
+### Para corrigir:
+1. Parei os containers e removi os volumes com `docker-compose down -v` (isso apaga os dados do banco para um reset limpo).
+2. Reiniciei os containers com `docker-compose up -d`, permitindo que as migrações fossem aplicadas na ordem correta.
+
+Agora o sistema funciona: banco saudável, migrações aplicadas, servidor Gunicorn rodando.
+
+---
+
+## 🚀 Requisitos para rodar o sistema
+
+- **Docker** (versão 20+ recomendada): 
+  - Para macOS: Instale via [Docker Desktop](https://docs.docker.com/desktop/install/mac-install/).
+  - Para Windows: Instale via [Docker Desktop](https://docs.docker.com/desktop/install/windows-install/) (certifique-se de que o WSL 2 está habilitado se aplicável).
+- **Docker Compose** (incluído no Docker Desktop).
+- Não é necessário instalar Python, PostgreSQL ou outras dependências localmente — tudo roda em containers.
+- **Nota**: Os comandos são os mesmos para macOS e Windows (use PowerShell ou Command Prompt no Windows).
+
+---
+
+## 📋 Instruções para rodar o sistema agora
+
+### 1. Configure o ambiente
+Certifique-se de que o arquivo `.env` está configurado (já existe em `clinica-de-psicologia/.env`). Verifique/edite as variáveis como `SECRET_KEY`, `DEBUG=True`, e configurações de DB (ex.: `DB_HOST=db`).
+
+### 2. Suba os containers
+```bash
+docker-compose up -d
+```
+Isso baixa imagens, constrói a aplicação, aplica migrações automaticamente, coleta arquivos estáticos e inicia o servidor.
+
+### 3. Acesse a aplicação
+```
+http://localhost:8000
+```
+
+---
+
+## 🛠 Comandos úteis
+
+```bash
+# Ver logs em tempo real
+docker-compose logs -f web
+
+# Acessar o shell do container da aplicação
+docker-compose exec web bash
+
+# Parar os containers
+docker-compose down
+
+# Resetar banco (se necessário)
+docker-compose down -v && docker-compose up -d
+```
+
+Se houver novos erros, verifique os logs. O sistema está funcional após o reset.
+
+---
+
+## 📁 Estrutura relevante (atualizada)
+
+```
+Clinica-de-psicologia/
+├── Dockerfile                  # Receita da imagem da aplicação
+├── docker-compose.yml          # Orquestração dos serviços
+├── entrypoint.sh               # Script de inicialização do container
+├── clinica-de-psicologia/      # Código-fonte Django
+│   ├── manage.py
+│   ├── requirements.txt
+│   ├── .env                    # Arquivo de configuração (já configurado)
+│   └── clinicaps/              # Módulo principal (settings, urls, wsgi)
+└── Instruncoes_docker          # Este arquivo com instruções atualizadas
+```

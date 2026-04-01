@@ -19,6 +19,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
+    path('', include('formulario.urls')),
     path('admin/', admin.site.urls),
-    path('formulario/', include('formulario.urls'))
+    path('formulario/', include('formulario.urls', namespace='formulario_app'))
 ]

@@ -3,6 +3,9 @@ from django.shortcuts import render
 from .forms import InscritoComunidadeForm, InscritoConvenioForm
 import json
 
+def home_view(request):
+    return render(request, 'index.html')
+
 def formulario_comunidade_view(request):
     # A view 'GET' apenas renderiza o seu template HTML
     if request.method == 'GET':

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Clínica de Psicologia - Início{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8 max-w-4xl">
+    <h1 class="text-3xl font-bold text-center mb-8 text-[#003366]">Bem-vindo à Clínica de Psicologia</h1>
+    
+    <div class="grid md:grid-cols-2 gap-8">
+        <div class="bg-gray-50 p-6 rounded-lg">
+            <h2 class="text-xl font-semibold mb-4">Inscrição na Comunidade</h2>
+            <p class="mb-4">Faça sua inscrição para participar da comunidade terapêutica.</p>
+            <a href="{% url 'formulario:formulario_comunidade' %}" class="bg-[#003366] text-white px-4 py-2 rounded hover:bg-blue-700">Inscrever-se</a>
+        </div>
+        
+        <div class="bg-gray-50 p-6 rounded-lg">
+            <h2 class="text-xl font-semibold mb-4">Inscrição por Convênio</h2>
+            <p class="mb-4">Inscrição para pacientes com convênio médico.</p>
+            <a href="{% url 'formulario:formulario_convenio' %}" class="bg-[#003366] text-white px-4 py-2 rounded hover:bg-blue-700">Inscrever-se</a>
+        </div>
+    </div>
+    
+    <div class="mt-8 text-center">
+        <a href="{% url 'admin:index' %}" class="text-[#003366] hover:underline">Área Administrativa</a>
+    </div>
+</div>
+{% endblock %}

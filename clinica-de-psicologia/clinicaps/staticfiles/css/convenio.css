@@ -1,0 +1,133 @@
+body {
+    font-family: "Inter", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.form-select:invalid {
+    color: #6c757d;
+}
+.form-select option {
+    color: #333;
+}
+
+.form-control[type="date"]:invalid,
+.form-control[type="date"]::placeholder {
+    color: #6c757d;
+    opacity: 1;
+}
+
+.input-error {
+    border: 1px solid #dc3545 !important;
+    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25) !important;
+}
+.custom-select-wrapper .input-error {
+    border-right: none !important; 
+}
+
+.custom-multiselect-wrapper .input-error {
+    border-right: none !important; 
+}
+
+.form-feedback-box {
+    padding: 1rem;
+    border-radius: 0.375rem;
+    border: 1px solid transparent;
+    margin-bottom: 1rem;
+    position: relative;
+    pacity: 1;
+    transition: opacity 0.15s linear;
+}
+.feedback-success {
+    background-color: #d1e7dd;
+    border-color: #badbcc;
+    color: #0a3622;
+}
+.feedback-danger {
+    background-color: #f8d7da;
+    border-color: #f5c2c7;
+    color: #58151c;
+}
+.feedback-close-btn {
+    background: transparent;
+    border: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+    color: #000;
+    opacity: 0.5;
+    position: absolute;
+    top: 0.5rem;
+    right: 0.75rem;
+    cursor: pointer;
+}
+.feedback-close-btn:hover {
+    opacity: 0.75;
+}
+.feedback-close-btn::before {
+    content: "×";
+}
+
+.loading-spinner {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    vertical-align: text-bottom;
+    border: 0.15em solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: 0.75s linear infinite spinner-border;
+    margin-right: 0.5rem;
+}
+@keyframes spinner-border {
+    to {
+    transform: rotate(360deg);
+    }
+}
+
+.error-message {
+    color: #dc3545;
+    font-size: 0.875em;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+.multiselect-pill {
+    display: inline-flex;
+    align-items: center;
+    background-color: #003366;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    border-radius: 0.25rem;
+    margin: 2px;
+    line-height: 1.2;
+}
+.multiselect-pill-remove {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    margin-left: 0.25rem;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+}
+.multiselect-pill-remove:hover {
+    opacity: 0.75;
+}
+
+.multiselect-display:not(:has(.multiselect-pill)) .placeholder-text {
+        display: inline-block;
+}
+.multiselect-display:has(.multiselect-pill) .placeholder-text {
+    display: none;
+}
+.multiselect-display {
+    min-height: 48px; 
+}
+.multiselect-dropdown {
+    max-height: 240px;
+    overflow-y: auto;
+}   

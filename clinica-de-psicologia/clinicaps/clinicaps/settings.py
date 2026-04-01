@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     "usuarios",
 ]
 
+AUTH_USER_MODEL = 'usuarios.Usuario'
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -80,12 +82,12 @@ WSGI_APPLICATION = "clinicaps.wsgi.application"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME'),     
-        'USER': os.getenv('DB_USER'),        
-        'PASSWORD': os.getenv('DB_PASSWORD'),     
-        'HOST': os.getenv('DB_HOST'),             
-        'PORT': os.getenv('DB_PORT'),     
-    }              
+        'NAME': os.getenv('DB_NAME', 'clinica_db'),
+        'USER': os.getenv('DB_USER', 'clinica_user'),
+        'PASSWORD': os.getenv('DB_PASSWORD', 'clinica_pass'),
+        'HOST': os.getenv('DB_HOST', 'localhost'),
+        'PORT': os.getenv('DB_PORT', '5432'),
+    }
 }
 
 
@@ -124,6 +126,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = "static/"
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # adiciona essa linha
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
