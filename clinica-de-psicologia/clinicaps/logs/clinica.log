@@ -794,3 +794,355 @@ WARNING 2026-03-30 15:57:43,613 basehttp "GET /static/logo.png HTTP/1.1" 404 183
 WARNING 2026-03-30 15:57:59,591 basehttp "GET /static/img/porto-saude.png HTTP/1.1" 404 1871
 WARNING 2026-03-30 16:00:31,350 basehttp "GET /static/logo.png HTTP/1.1" 404 1838
 WARNING 2026-03-30 16:01:04,624 basehttp "GET /static/logo.png HTTP/1.1" 404 1838
+WARNING 2026-03-30 22:50:12,906 basehttp "GET /accounts/login/?next=/login/redirect/ HTTP/1.1" 404 4423
+WARNING 2026-04-01 08:26:28,983 basehttp "GET /accounts/login/?next=/login/redirect/ HTTP/1.1" 404 4423
+WARNING 2026-04-01 08:27:33,162 basehttp "GET /accounts/login/?next=/login/redirect/ HTTP/1.1" 404 4423
+WARNING 2026-04-01 08:32:15,151 basehttp "GET /accounts/login/?next=/login/redirect/ HTTP/1.1" 404 4423
+WARNING 2026-04-01 08:32:19,435 basehttp "GET /accounts/login/?next=/login/redirect/ HTTP/1.1" 404 4423
+WARNING 2026-04-01 13:41:05,427 basehttp "GET /favicon.ico HTTP/1.1" 404 4389
+ERROR 2026-04-01 14:27:14,355 log Internal Server Error: /supervisor/arquivados/
+Traceback (most recent call last):
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+               ^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\urls\resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'dados_inscrito' with arguments '('',)' not found. 1 pattern(s) tried: ['estagiario/dados\\-inscrito/(?P<pk>[0-9]+)/\\Z']
+ERROR 2026-04-01 14:27:14,370 basehttp "GET /supervisor/arquivados/ HTTP/1.1" 500 184326
+ERROR 2026-04-01 14:51:16,999 log Internal Server Error: /estagiario/dados-inscrito/5/
+Traceback (most recent call last):
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 510, in parse
+    compile_func = self.tags[command]
+                   ~~~~~~~~~^^^^^^^^^
+KeyError: 'endblock'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\clinicaps\estagiario\views.py", line 311, in dados_inscrito
+    return render(request, 'dados_inscrito.html', context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+           ^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+               ^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 567, in invalid_block_tag
+    raise self.error(
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 199: 'endblock', expected 'elif', 'else' or 'endif'. Did you forget to register or load this tag?
+ERROR 2026-04-01 14:51:17,009 basehttp "GET /estagiario/dados-inscrito/5/ HTTP/1.1" 500 239096
+ERROR 2026-04-01 15:01:45,890 log Internal Server Error: /estagiario/dados-inscrito-detalhe/comunidade/1/
+Traceback (most recent call last):
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\clinicaps\estagiario\views.py", line 369, in dados_inscrito_detalhe
+    return render(request, 'dados_inscrito.html', context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\urls\resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'finalizar_ciclo' with arguments '('',)' not found. 1 pattern(s) tried: ['supervisor/finalizar\\-ciclo/(?P<pk>[0-9]+)/\\Z']
+ERROR 2026-04-01 15:01:45,895 basehttp "GET /estagiario/dados-inscrito-detalhe/comunidade/1/ HTTP/1.1" 500 191744
+ERROR 2026-04-01 15:02:23,504 log Internal Server Error: /estagiario/dados-inscrito-detalhe/comunidade/1/
+Traceback (most recent call last):
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\clinicaps\estagiario\views.py", line 369, in dados_inscrito_detalhe
+    return render(request, 'dados_inscrito.html', context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\urls\resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'finalizar_ciclo' with arguments '('',)' not found. 1 pattern(s) tried: ['supervisor/finalizar\\-ciclo/(?P<pk>[0-9]+)/\\Z']
+ERROR 2026-04-01 15:02:23,507 basehttp "GET /estagiario/dados-inscrito-detalhe/comunidade/1/ HTTP/1.1" 500 191744
+ERROR 2026-04-01 15:13:36,788 log Internal Server Error: /estagiario/dados-inscrito-detalhe/comunidade/2/
+Traceback (most recent call last):
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\clinicaps\estagiario\views.py", line 369, in dados_inscrito_detalhe
+    return render(request, 'dados_inscrito.html', context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\template\defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\urls\base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\projeto\Clinica-de-psicologia\clinica-de-psicologia\env\Lib\site-packages\django\urls\resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'finalizar_ciclo' with arguments '('',)' not found. 1 pattern(s) tried: ['supervisor/finalizar\\-ciclo/(?P<pk>[0-9]+)/\\Z']
+ERROR 2026-04-01 15:13:36,789 basehttp "GET /estagiario/dados-inscrito-detalhe/comunidade/2/ HTTP/1.1" 500 191744

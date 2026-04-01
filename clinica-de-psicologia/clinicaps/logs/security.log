@@ -1,0 +1,4 @@
+WARNING 2026-03-30 22:50:12,864 middleware Tentativa de acesso não autenticado a área sensível: /coordenador/coord/
+WARNING 2026-04-01 08:26:28,957 middleware Tentativa de acesso não autenticado a área sensível: /coordenador/coord/
+WARNING 2026-04-01 08:27:33,080 middleware Tentativa de acesso não autenticado a área sensível: /coordenador/coord/
+WARNING 2026-04-01 08:32:15,081 middleware Tentativa de acesso não autenticado a área sensível: /coordenador/coord/

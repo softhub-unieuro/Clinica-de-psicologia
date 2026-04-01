@@ -49,7 +49,7 @@
                     <td class="px-6 py-4">{{ prontuario.supervisor.nome_completo|default:"-" }}</td>
                     <td class="px-6 py-4">{{ prontuario.dth_abertura|date:"d/m/Y" }}</td>
                     <td class="px-6 py-4">
-                        <a href="#" class="btn btn-sm btn-outline-secondary disabled" aria-disabled="true">
+                        <a href="{% url 'estagiario:dados_inscrito' prontuario.idprontuario %}" class="btn btn-sm btn-outline-secondary">
                             <i class="bi bi-eye"></i> Visualizar
                         </a>
                     </td>
