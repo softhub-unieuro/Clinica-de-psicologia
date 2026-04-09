@@ -314,4 +314,3 @@ class ContatoUrgencia(models.Model):
 
     def __str__(self):
         return f"Contato {self.sequencia}: {self.nomecontato} - {self.telefonecontato}"
-
