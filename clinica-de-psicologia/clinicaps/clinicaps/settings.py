@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from dotenv import load_dotenv
 import os
 load_dotenv()
@@ -80,6 +82,9 @@ INSTALLED_APPS = [
     "Supervisor",
     "RespTecn",
     "jazzmin",
+    'axes',  
+    'rest_framework', 
+    'rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [
@@ -87,6 +92,7 @@ MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
+    "axes.middleware.AxesMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -260,3 +266,37 @@ EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True') == 'True'
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'noreply@clinicaps.com')
+AXES_FAILURE_LIMIT = 5                    # 5 tentativas antes de bloquear
+AXES_COOLOFF_DURATION = timedelta(minutes=30)  # Bloqueio por 30 min
+AXES_LOCK_OUT_AT_FAILURE = True           # Bloqueia IP/username
+AXES_LOCKOUT_TEMPLATE = 'axes/lockout.html'
+AXES_USE_USER_AGENT = True                # Detecta mudança de browser
+AXES_RESET_ON_SUCCESS = True              # Reseta contador ao sucesso
+AXES_VERBOSE = True
+
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '100/hour',
+        'user': '1000/hour'
+    }
+}

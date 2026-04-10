@@ -36,6 +36,9 @@ class CustomLoginView(LoginView):
     redirect_authenticated_user = True
 
     def get_success_url(self):
+        from axes.models import AccessAttempt
+        AccessAttempt.objects.filter(username=self.request.POST.get('username')).delete()
+
         return reverse_lazy('redirect_dashboard')
 
 class CadastroUsuarioView(CreateView):

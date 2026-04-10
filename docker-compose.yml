@@ -1,0 +1,57 @@
+# ============================================================
+# docker-compose.yml — Clínica de Psicologia (softhub-unieuro)
+# Orquestra: aplicação Django (web) + banco PostgreSQL (db)
+# ============================================================
+
+services:
+
+  db:
+    image: postgres:16-alpine
+    container_name: clinica_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME:-clinica}
+      POSTGRES_USER: ${DATABASE_USER:-clinica_user}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-clinica_pass}
+    volumes:
+      # Persiste os dados do banco entre reinicializações
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - clinica_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER:-clinica_user} -d ${DATABASE_NAME:-clinica}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: clinica_web
+    restart: unless-stopped
+    env_file:
+      - clinica-de-psicologia/clinicaps/.env
+    environment:
+      - DATABASE_HOST=db
+    ports:
+      - "8000:8000"
+    volumes:
+      # Monta o código localmente para hot-reload em desenvolvimento
+      - ./clinica-de-psicologia/clinicaps:/app
+      - staticfiles:/app/staticfiles
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - clinica_network
+
+volumes:
+  postgres_data:
+  staticfiles:
+
+networks:
+  clinica_network:
+    driver: bridge

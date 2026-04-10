@@ -1146,3 +1146,8 @@ Traceback (most recent call last):
     raise NoReverseMatch(msg)
 django.urls.exceptions.NoReverseMatch: Reverse for 'finalizar_ciclo' with arguments '('',)' not found. 1 pattern(s) tried: ['supervisor/finalizar\\-ciclo/(?P<pk>[0-9]+)/\\Z']
 ERROR 2026-04-01 15:13:36,789 basehttp "GET /estagiario/dados-inscrito-detalhe/comunidade/2/ HTTP/1.1" 500 191744
+WARNING 2026-04-09 13:19:05,581 basehttp "GET /static/img/unieuro.png HTTP/1.1" 404 1859
+WARNING 2026-04-09 13:19:06,778 basehttp "GET /static/img/unieuro.png HTTP/1.1" 404 1859
+WARNING 2026-04-09 13:19:15,397 basehttp "GET /favicon.ico HTTP/1.1" 404 4389
+WARNING 2026-04-09 13:19:17,665 basehttp "GET /static/img/unieuro.png HTTP/1.1" 404 1859
+WARNING 2026-04-09 13:19:17,905 basehttp "GET /static/img/unieuro.png HTTP/1.1" 404 1859
