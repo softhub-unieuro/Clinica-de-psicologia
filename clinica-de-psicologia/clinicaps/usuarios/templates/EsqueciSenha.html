@@ -1,0 +1,57 @@
+{% load static %}
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <title>Recuperar Senha</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+
+  <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-sm text-center">
+    <img src="{% static 'img/Logo2.png' %}" alt="Logo" class="w-32 mx-auto mb-6">
+    
+    <h2 class="text-2xl font-bold text-[#003366] mb-2">Recuperar Senha</h2>
+    <p class="text-gray-600 text-sm mb-6">Digite seu e-mail cadastrado para receber o código de verificação.</p>
+
+    <form id="formEsqueciSenha" class="space-y-4">
+      {% csrf_token %}
+      <input type="email" id="emailInput" placeholder="seu-email@unieuro.edu.br" required
+             class="w-full py-3 px-4 bg-gray-200 text-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+      
+      <button type="submit" class="w-full py-3 bg-[#003366] text-white font-medium rounded-md hover:bg-[#002244] transition-colors">
+        Enviar Código
+      </button>
+    </form>
+
+    <div class="mt-4">
+      <a href="{% url 'login' %}" class="text-sm text-blue-600 hover:underline">Voltar para o Login</a>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('formEsqueciSenha').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('emailInput').value;
+
+      const response = await fetch("{% url 'esqueci_senha' %}", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({ email: email })
+      });
+
+      const data = await response.json();
+
+      if (data.sucesso) {
+        // Agora sim ele te joga para a tela de verificar o código
+        window.location.href = "{% url 'verificar_codigo' %}";
+      } else {
+        alert(data.mensagem);
+      }
+    });
+  </script>
+</body>
+</html>
