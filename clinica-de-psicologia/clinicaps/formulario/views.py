@@ -1,16 +1,18 @@
 from django.http import JsonResponse
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_protect
+from django.middleware.csrf import get_token
 from .forms import InscritoComunidadeForm, InscritoConvenioForm
 import json
 
 def tela_inicial_view(request):
     return render(request, 'inicial.html')
 
-@crsf_protect
+@csrf_protect
 def formulario_comunidade_view(request):
     # A view 'GET' apenas renderiza o seu template HTML
     if request.method == 'GET':
-        context = {'crsf_token': get_token(request)}  # Gera o token CSRF para o template
+        context = {'csrf_token': get_token(request)}  # Gera o token CSRF para o template
         return render(request, 'comunida_form.html', context)
 
     if request.method == 'POST':
@@ -26,14 +28,12 @@ def formulario_comunidade_view(request):
             return JsonResponse({'status': 'sucesso', 'mensagem': 'Inscrição realizada com sucesso!'})
         else:
             erros_para_js = dict(form.errors)
-
             return JsonResponse({'status': 'erro_validacao', 'erros': erros_para_js}, status=400)
 
     # Se for outro método (PUT, etc.)
     return JsonResponse({'status': 'erro', 'mensagem': 'Método não permitido.'}, status=405)
 
 def formulario_convenio_view(request):
-
     if request.method == 'GET':
         return render(request, 'convenio_form.html')
 
@@ -44,20 +44,16 @@ def formulario_convenio_view(request):
             return JsonResponse({'status': 'erro', 'mensagem': 'JSON inválido.'}, status=400)
         
         form = InscritoConvenioForm(data)
-
         if form.is_valid():
             form.save()
             return JsonResponse({'status': 'sucesso', 'mensagem': 'Inscrição realizada com sucesso!'})
         else:
             erros_para_js = dict(form.errors)
-
             return JsonResponse({'status': 'erro_validacao', 'erros': erros_para_js}, status=400)
 
     return JsonResponse({'status': 'erro', 'mensagem': 'Método não permitido.'}, status=405)
-
 
 def formulario_test_view(request):
-
     if request.method == 'GET':
         return render(request, 'convenio_form.html')
 
@@ -68,16 +64,11 @@ def formulario_test_view(request):
             return JsonResponse({'status': 'erro', 'mensagem': 'JSON inválido.'}, status=400)
         
         form = InscritoConvenioForm(data)
-
         if form.is_valid():
             form.save()
             return JsonResponse({'status': 'sucesso', 'mensagem': 'Inscrição realizada com sucesso!'})
         else:
             erros_para_js = dict(form.errors)
-
             return JsonResponse({'status': 'erro_validacao', 'erros': erros_para_js}, status=400)
 
     return JsonResponse({'status': 'erro', 'mensagem': 'Método não permitido.'}, status=405)
-
-
-

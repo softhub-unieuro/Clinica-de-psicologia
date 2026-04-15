@@ -10,8 +10,8 @@
             theme: {
                 extend: {
                     colors: {
-                        'uni-blue': '#003366', // Azul escuro do cabeçalho/botões
-                        'uni-gold': '#d4a017', // Dourado/Amarelo dos botões "Abrir"
+                        'uni-blue': '#003366',
+                        'uni-gold': '#d4a017',
                         'uni-gold-dark': '#b8860b',
                     }
                 }
@@ -19,7 +19,6 @@
         }
     </script>
     <style>
-        /* Estilo para o label que "corta" a borda do input */
         .input-group {
             position: relative;
         }
@@ -33,8 +32,13 @@
             color: #003366;
             font-weight: 600;
         }
+        .inscrito-card {
+            transition: all 0.2s ease;
+        }
+        .inscrito-card.hidden-card {
+            display: none;
+        }
     </style>
-    <!-- jsPDF for PDF generation -->
     <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 {% endblock %}
 
@@ -50,26 +54,19 @@
         </div>
         {% endif %}
 
-        <div class="flex justify-between items-center mb-8">
-            <h2 class="text-xl font-bold text-uni-blue">Clínica Psicológica</h2>
-            <div class="relative">
-                <input type="text" class="bg-gray-100 rounded-md pl-4 pr-10 py-2 w-64 focus:outline-none focus:ring-1 focus:ring-uni-blue/30 text-sm">
-                <i class="fa fa-search absolute right-3 top-2.5 text-gray-400"></i>
-            </div>
-        </div>
-
         <div class="mb-6">
             <h1 class="text-2xl font-bold text-uni-blue mb-2">Consulta de Inscritos</h1>
             <p class="text-gray-500 text-sm">Explore perfis, analise fichas de inscrição e escolha candidatos para acompanhamento terapêutico.</p>
         </div>
 
-        <div class="mb-10 input-group">
-            <label class="input-label text-uni-blue">Digite o nome do Inscrito</label>
-            <div class="relative">
-                <input type="text" placeholder="Nome do Inscrito" class="w-full border border-uni-blue rounded-lg py-3 px-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-uni-blue/20">
-                <i class="fa fa-search absolute right-4 top-3.5 text-uni-blue text-lg"></i>
-            </div>
-        </div>
+      <!-- BARRA DE PESQUISA CORRIGIDA -->
+<div class="mb-10">
+    <label class="block text-uni-blue font-bold mb-2">Digite o nome do Inscrito</label>
+    <div class="relative">
+        <input type="text" id="searchInput" onkeyup="filtrarInscritos()" placeholder="Digite o nome do inscrito..." class="w-full border border-uni-blue rounded-lg py-3 px-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-uni-blue/20">
+        <i class="fa fa-search absolute right-4 top-3.5 text-uni-blue text-lg"></i>
+    </div>
+</div>
 
         <!-- SEÇÃO: INSCRITOS ATRIBUÍDOS -->
         <section class="mb-12">
@@ -84,9 +81,9 @@
                 <div class="md:col-span-2 text-center">Ação</div>
             </div>
 
-            <div class="space-y-3">
+            <div class="space-y-3" id="atribuidos-container">
                 {% for prontuario in prontuarios_atribuidos %}
-                <div class="bg-gray-100/80 rounded-lg px-4 py-3 grid grid-cols-1 md:grid-cols-12 gap-4 items-center shadow-sm">
+                <div class="inscrito-card bg-gray-100/80 rounded-lg px-4 py-3 grid grid-cols-1 md:grid-cols-12 gap-4 items-center shadow-sm" data-nome="{% if prontuario.paciente_comunidade %}{{ prontuario.paciente_comunidade.nomeinscrito|lower }}{% else %}{{ prontuario.paciente_convenio.nomeinscrito|lower }}{% endif %}">
                     <div class="md:col-span-4 flex items-center gap-3">
                         <i class="fa-regular fa-circle-user text-2xl text-gray-500"></i>
                         <span class="font-medium text-gray-700 text-sm">
@@ -113,7 +110,7 @@
         </section>
 
         <!-- SEÇÃO: INSCRITOS COMUNIDADE -->
-        <section class="mb-8">
+        <section class="mb-8" id="comunidade-section">
             <h3 class="text-xl font-bold text-uni-blue mb-1">Inscritos Comunidade</h3>
             <p class="text-xs text-gray-400 mb-4">Inscritos da comunidade disponíveis para seleção</p>
 
@@ -125,9 +122,9 @@
                 <div class="md:col-span-2 text-center">Ação</div>
             </div>
 
-            <div class="space-y-3">
+            <div class="space-y-3" id="comunidade-container">
                 {% for inscrito in lista_comunidade %}
-                 <div class="bg-gray-100/80 rounded-lg px-4 py-3 grid grid-cols-1 md:grid-cols-12 gap-4 items-center shadow-sm">
+                 <div class="inscrito-card bg-gray-100/80 rounded-lg px-4 py-3 grid grid-cols-1 md:grid-cols-12 gap-4 items-center shadow-sm" data-nome="{{ inscrito.nomeinscrito|lower }}" data-section="comunidade">
                     <div class="md:col-span-4 flex items-center gap-3">
                         <i class="fa-regular fa-circle-user text-2xl text-gray-500"></i>
                         <span class="font-medium text-gray-700 text-sm">{{ inscrito.nomeinscrito }}</span>
@@ -155,7 +152,7 @@
             
             <!-- Paginação Comunidade -->
             {% if page_obj_com.has_other_pages %}
-            <div class="mt-4 flex justify-center gap-2 text-sm">
+            <div class="mt-4 flex justify-center gap-2 text-sm" id="comunidade-pagination">
                 {% if page_obj_com.has_previous %}
                     <a href="?page_comunidade={{ page_obj_com.previous_page_number }}&page_convenio={{ page_obj_conv.number }}" class="px-3 py-1 bg-white border rounded hover:bg-gray-100 text-uni-blue">Anterior</a>
                 {% endif %}
@@ -168,7 +165,7 @@
         </section>
 
         <!-- SEÇÃO: INSCRITOS CONVÊNIO -->
-        <section>
+        <section id="convenio-section">
             <h3 class="text-xl font-bold text-uni-blue mb-1">Inscritos Convênio</h3>
             <p class="text-xs text-gray-400 mb-4">Inscritos de convênio disponíveis para seleção</p>
 
@@ -180,9 +177,9 @@
                 <div class="md:col-span-2 text-center">Ação</div>
             </div>
 
-            <div class="space-y-3">
+            <div class="space-y-3" id="convenio-container">
                 {% for inscrito in lista_convenio %}
-                 <div class="bg-gray-100/80 rounded-lg px-4 py-3 grid grid-cols-1 md:grid-cols-12 gap-4 items-center shadow-sm">
+                 <div class="inscrito-card bg-gray-100/80 rounded-lg px-4 py-3 grid grid-cols-1 md:grid-cols-12 gap-4 items-center shadow-sm" data-nome="{{ inscrito.nomeinscrito|lower }}" data-section="convenio">
                     <div class="md:col-span-4 flex items-center gap-3">
                         <i class="fa-regular fa-circle-user text-2xl text-gray-500"></i>
                         <span class="font-medium text-gray-700 text-sm">{{ inscrito.nomeinscrito }}</span>
@@ -211,7 +208,7 @@
 
             <!-- Paginação Convênio -->
             {% if page_obj_conv.has_other_pages %}
-            <div class="mt-4 flex justify-center gap-2 text-sm">
+            <div class="mt-4 flex justify-center gap-2 text-sm" id="convenio-pagination">
                 {% if page_obj_conv.has_previous %}
                     <a href="?page_convenio={{ page_obj_conv.previous_page_number }}&page_comunidade={{ page_obj_com.number }}" class="px-3 py-1 bg-white border rounded hover:bg-gray-100 text-uni-blue">Anterior</a>
                 {% endif %}
@@ -223,7 +220,7 @@
             {% endif %}
         </section>
 
-    <!-- Modal de Evolução (Mantido da versão anterior) -->
+    <!-- Modal de Evolução -->
     <div id="evolucaoModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
         <div class="bg-white rounded-lg p-6 w-full max-w-lg">
             <h3 class="text-xl font-bold text-[#003366] mb-4">Registrar Consulta (Evolução)</h3>
@@ -262,7 +259,113 @@
 
 {% block scripts %}
     <script>
-        // Exporta os dados do inscrito em PDF (jsPDF)
+        // FUNÇÃO DE BUSCA EM TEMPO REAL
+        function filtrarInscritos() {
+            const termoBusca = document.getElementById('searchInput').value.toLowerCase().trim();
+            
+            const todosCards = document.querySelectorAll('.inscrito-card');
+            
+            let resultadosComunidade = 0;
+            let resultadosConvenio = 0;
+            let resultadosAtribuidos = 0;
+            
+            todosCards.forEach(card => {
+                const nomeInscrito = card.getAttribute('data-nome');
+                const section = card.getAttribute('data-section');
+                
+                if (termoBusca === '') {
+                    card.classList.remove('hidden-card');
+                    
+                    if (section === 'comunidade') resultadosComunidade++;
+                    else if (section === 'convenio') resultadosConvenio++;
+                    else resultadosAtribuidos++;
+                } else {
+                    if (nomeInscrito && nomeInscrito.includes(termoBusca)) {
+                        card.classList.remove('hidden-card');
+                        
+                        if (section === 'comunidade') resultadosComunidade++;
+                        else if (section === 'convenio') resultadosConvenio++;
+                        else resultadosAtribuidos++;
+                    } else {
+                        card.classList.add('hidden-card');
+                    }
+                }
+            });
+            
+            // Mostra/esconde as seções baseado nos resultados
+            const atribuidosContainer = document.getElementById('atribuidos-container');
+            
+            if (atribuidosContainer) {
+                const cardsAtribuidosVisiveis = atribuidosContainer.querySelectorAll('.inscrito-card:not(.hidden-card)');
+                const mensagemVazio = atribuidosContainer.querySelector('.text-center.py-4');
+                
+                if (cardsAtribuidosVisiveis.length === 0 && termoBusca !== '') {
+                    if (!mensagemVazio || !mensagemVazio.classList.contains('mensagem-busca-vazia')) {
+                        const msgVazia = document.createElement('div');
+                        msgVazia.className = 'text-center py-4 text-gray-500 mensagem-busca-vazia';
+                        msgVazia.innerHTML = `<i class="fa fa-search mr-2"></i>Nenhum inscrito atribuído encontrado para "${termoBusca}"`;
+                        if (!mensagemVazio) {
+                            atribuidosContainer.appendChild(msgVazia);
+                        }
+                    }
+                } else {
+                    const msgVazia = atribuidosContainer.querySelector('.mensagem-busca-vazia');
+                    if (msgVazia) msgVazia.remove();
+                }
+            }
+            
+            const comunidadeContainer = document.getElementById('comunidade-container');
+            if (comunidadeContainer) {
+                let mensagemVaziaCom = comunidadeContainer.querySelector('.mensagem-busca-vazia');
+                
+                if (resultadosComunidade === 0 && termoBusca !== '') {
+                    if (!mensagemVaziaCom) {
+                        mensagemVaziaCom = document.createElement('div');
+                        mensagemVaziaCom.className = 'text-center py-4 text-gray-500 mensagem-busca-vazia';
+                        mensagemVaziaCom.innerHTML = `<i class="fa fa-search mr-2"></i>Nenhum inscrito da comunidade encontrado para "${termoBusca}"`;
+                        comunidadeContainer.appendChild(mensagemVaziaCom);
+                    }
+                } else {
+                    if (mensagemVaziaCom) mensagemVaziaCom.remove();
+                }
+            }
+            
+            const convenioContainer = document.getElementById('convenio-container');
+            if (convenioContainer) {
+                let mensagemVaziaConv = convenioContainer.querySelector('.mensagem-busca-vazia');
+                
+                if (resultadosConvenio === 0 && termoBusca !== '') {
+                    if (!mensagemVaziaConv) {
+                        mensagemVaziaConv = document.createElement('div');
+                        mensagemVaziaConv.className = 'text-center py-4 text-gray-500 mensagem-busca-vazia';
+                        mensagemVaziaConv.innerHTML = `<i class="fa fa-search mr-2"></i>Nenhum inscrito de convênio encontrado para "${termoBusca}"`;
+                        convenioContainer.appendChild(mensagemVaziaConv);
+                    }
+                } else {
+                    if (mensagemVaziaConv) mensagemVaziaConv.remove();
+                }
+            }
+            
+            const paginacaoCom = document.getElementById('comunidade-pagination');
+            const paginacaoConv = document.getElementById('convenio-pagination');
+            
+            if (paginacaoCom) {
+                if (resultadosComunidade === 0 && termoBusca !== '') {
+                    paginacaoCom.style.display = 'none';
+                } else {
+                    paginacaoCom.style.display = 'flex';
+                }
+            }
+            
+            if (paginacaoConv) {
+                if (resultadosConvenio === 0 && termoBusca !== '') {
+                    paginacaoConv.style.display = 'none';
+                } else {
+                    paginacaoConv.style.display = 'flex';
+                }
+            }
+        }
+        
         function exportInscritoPdf(data) {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF({ unit: 'pt', format: 'a4' });
@@ -270,7 +373,6 @@
             const margin = 48;
             let y = margin;
 
-            // Cabeçalho
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(16);
             doc.text('Clínica Psicológica - Ficha de Inscrição', margin, y);
@@ -281,7 +383,6 @@
             doc.text(`Data de emissão: ${new Date().toLocaleDateString('pt-BR')}`, margin, y);
             y += 24;
 
-            // Seção principal
             doc.setFont('helvetica', 'bold');
             doc.text('Dados do Inscrito', margin, y);
             y += 18;
@@ -291,12 +392,12 @@
             doc.text(`Data de Inscrição: ${data.dataInscricao}`, margin, y); y += 16;
             doc.text(`Tipo de Atendimento: ${data.tipoAtendimento}`, margin, y); y += 24;
 
-            // Rodapé
             doc.setFontSize(9);
             doc.text('Documento gerado automaticamente pelo sistema.', margin, doc.internal.pageSize.getHeight() - margin);
 
             doc.save(`inscrito_${data.nome.replace(/\s+/g,'_')}.pdf`);
         }
+        
         function openEvolucaoModal(idprontuario) {
             document.getElementById('modalIdProntuario').value = idprontuario;
             document.getElementById('evolucaoModal').classList.remove('hidden');
@@ -315,5 +416,11 @@
                 charCount.textContent = this.value.length;
             });
         }
+        
+        document.getElementById('searchInput').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                filtrarInscritos();
+            }
+        });
     </script>
 {% endblock %}
