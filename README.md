@@ -8,16 +8,17 @@
 
 - [Visão Geral](#-visão-geral)
 - [Tecnologias Utilizadas](#-tecnologias-utilizadas)
+- [Instalação e Configuração com Docker Compose](#-instalação-e-configuração-com-docker-compose)
 - [Alterações Implementadas](#-alterações-implementadas)
 - [Melhorias de Segurança](#-melhorias-de-segurança)
 - [Otimizações de Performance](#-otimizações-de-performance)
 - [Conformidade com LGPD](#-conformidade-com-lgpd)
-- [Instalação e Configuração](#-instalação-e-configuração)
 - [Roteiro de Vídeo (Ambiente de Testes)](#-roteiro-de-vídeo-ambiente-de-testes)
 - [Uso do Sistema](#-uso-do-sistema)
 - [Comandos Importantes](#-comandos-importantes)
 - [Estrutura do Projeto](#-estrutura-do-projeto)
 - [Boas Práticas](#-boas-práticas)
+- [Troubleshooting](#-troubleshooting)
 
 ---
 
@@ -43,6 +44,8 @@ Este sistema foi desenvolvido para automação de atendimentos clínicos em uma 
 - **Django**: 5.2.1
 - **PostgreSQL**: Banco de dados relacional
 - **psycopg2**: 2.9.10 (Adaptador PostgreSQL)
+- **Gunicorn**: Servidor WSGI em produção
+- **Docker & Docker Compose**: Containerização e orquestração
 
 ### Frontend
 - **HTML5 / CSS3**
@@ -60,6 +63,7 @@ python-dotenv==1.1.1      # Gerenciamento de variáveis de ambiente
 validate-docbr==1.11.1    # Validação de CPF/CNPJ
 Pillow==12.0.0            # Manipulação de imagens
 django-jazzmin==3.5.5     # Interface administrativa moderna
+gunicorn==21.2.0          # Servidor WSGI
 ```
 
 ### Segurança
@@ -69,6 +73,142 @@ django-jazzmin==3.5.5     # Interface administrativa moderna
 - Clickjacking Protection
 - Session Security
 - HTTPS (recomendado em produção)
+
+---
+
+## 🐳 Instalação e Configuração com Docker Compose
+
+### Pré-requisitos
+
+- **Docker**: v24.0 ou superior
+- **Docker Compose**: v2.20 ou superior
+- **Git**: para clonar o repositório
+
+### Verificar Instalação
+
+```bash
+docker --version
+docker compose version
+git --version
+```
+
+### Passos de Instalação
+
+#### 1. Clonar o Repositório
+
+```bash
+git clone https://github.com/softhub-unieuro/clinica-de-psicologia.git
+cd clinica-de-psicologia
+git checkout Daniel_docker-branch
+```
+
+#### 2. Configurar Variáveis de Ambiente
+
+```bash
+# Copiar arquivo de exemplo
+cp .env.example .env
+
+# Editar o arquivo .env com suas configurações
+# Importante: Alterar SECRET_KEY e credenciais de banco de dados
+nano .env  # ou use seu editor preferido
+```
+
+**Variáveis essenciais a configurar:**
+```env
+# Segurança
+SECRET_KEY=sua-chave-secreta-super-segura-aqui-MUDE-EM-PRODUCAO
+DEBUG=False
+
+# Banco de Dados (Docker Compose)
+DB_NAME=clinica_psicologia
+DB_USER=postgres
+DB_PASSWORD=sua_senha_segura_aqui
+DB_HOST=postgres
+DB_PORT=5432
+
+# Email (opcional para recuperação de senha)
+EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
+EMAIL_HOST_USER=seu_email@exemplo.com
+EMAIL_HOST_PASSWORD=sua_senha_de_app
+
+# Docker
+ALLOWED_HOSTS=localhost,127.0.0.1,web
+```
+
+#### 3. Build e Inicializar Containers
+
+```bash
+# Build das imagens Docker
+docker compose build
+
+# Iniciar os containers em background
+docker compose up -d
+
+# Acompanhar os logs (opcional)
+docker compose logs -f
+```
+
+#### 4. Executar Migrações do Banco
+
+```bash
+# Executar migrações
+docker compose exec web python manage.py migrate
+
+# Criar superusuário
+docker compose exec web python manage.py createsuperuser
+```
+
+#### 5. Coletar Arquivos Estáticos (Opcional)
+
+```bash
+docker compose exec web python manage.py collectstatic --noinput
+```
+
+#### 6. Acessar a Aplicação
+
+- **URL da Aplicação**: http://localhost:8000
+- **Admin (Jazzmin)**: http://localhost:8000/admin
+- **Banco de Dados**: PostgreSQL em localhost:5432
+
+### Comandos Docker Compose Úteis
+
+```bash
+# Ver status dos containers
+docker compose ps
+
+# Ver logs em tempo real
+docker compose logs -f
+
+# Ver logs de um serviço específico
+docker compose logs -f web      # Django
+docker compose logs -f postgres # PostgreSQL
+
+# Executar comando no container
+docker compose exec web python manage.py shell
+
+# Parar containers
+docker compose stop
+
+# Remover containers (dados persistem em volumes)
+docker compose down
+
+# Remover tudo incluindo volumes (⚠️ deleta dados)
+docker compose down -v
+
+# Rebuild após mudanças no Dockerfile
+docker compose build --no-cache
+docker compose up -d
+```
+
+### Estrutura de Volumes
+
+O Docker Compose cria os seguintes volumes:
+- `postgres_data`: Dados do PostgreSQL (persistente)
+- `static_volume`: Arquivos estáticos da aplicação
+- `media_volume`: Uploads de usuários (TCLE, documentos)
 
 ---
 
@@ -279,8 +419,8 @@ EMAIL_HOST_PASSWORD=sua_senha_de_app
 
 **Por que foi necessário:**
 - Evitar commit de credenciais no Git
-- Proteção de logs com dados de auditoria
-- Proteção de uploads de pacientes (TCLE, documentos)
+- Reduzir tamanho do repositório
+- Proteção de dados sensíveis
 
 ---
 
@@ -288,418 +428,175 @@ EMAIL_HOST_PASSWORD=sua_senha_de_app
 
 ### 1. **Índices de Banco de Dados**
 
-#### Arquivos Modificados:
-- `usuarios/models.py`
-- `formulario/models.py`
-- `coodernador/models.py`
+**Campos indexados (15 campos estratégicos):**
+- `Inscritos`: `cpfinscrito`, `email`, `celular`, `status`
+- `Prontuário`: `id_estagiario`, `id_inscrito`, `data_criacao`
+- `Evolução`: `id_prontuario`, `data_evolucao`
 
-**O que foi alterado:**
-Adicionados índices estratégicos nos modelos para acelerar queries frequentes:
-
-**Usuario (usuarios/models.py):**
 ```python
-indexes = [
-    models.Index(fields=['cargo'], name='idx_usuario_cargo'),
-    models.Index(fields=['cpf'], name='idx_usuario_cpf'),
-    models.Index(fields=['matricula'], name='idx_usuario_matricula'),
-    models.Index(fields=['supervisor_vinculado'], name='idx_usuario_supervisor'),
-    models.Index(fields=['status_delete', 'is_active'], name='idx_usuario_status'),
-]
+# Exemplo de uso em models.py
+class Inscritos(models.Model):
+    cpfinscrito = models.CharField(max_length=15, db_index=True)
+    email = models.EmailField(db_index=True)
+    status = models.CharField(max_length=20, db_index=True)
 ```
 
-**Prontuario (coodernador/models.py):**
+### 2. **Otimização de Queries**
+
+#### Use `select_related()` para ForeignKeys:
 ```python
-indexes = [
-    models.Index(fields=['estagiario', 'status_ativo'], name='idx_pront_estag_status'),
-    models.Index(fields=['status_ativo'], name='idx_pront_status'),
-    models.Index(fields=['paciente_comunidade'], name='idx_pront_pac_comun'),
-    models.Index(fields=['paciente_convenio'], name='idx_pront_pac_conv'),
-    models.Index(fields=['supervisor'], name='idx_pront_supervisor'),
-]
+# ❌ Ruim (N+1 queries)
+prontuarios = Prontuario.objects.all()
+for p in prontuarios:
+    print(p.estagiario.nome)  # Query adicional
+
+# ✅ Bom (1 query)
+prontuarios = Prontuario.objects.select_related('estagiario')
+for p in prontuarios:
+    print(p.estagiario.nome)
 ```
 
-**Inscritocomunidade e Inscritoconvenio (formulario/models.py):**
+#### Use `prefetch_related()` para Many-to-Many:
 ```python
-indexes = [
-    models.Index(fields=['dthinscricao'], name='idx_dthinsc_comun'),
-    models.Index(fields=['cpfinscrito'], name='idx_cpf_inscr_comun'),
-    models.Index(fields=['status'], name='idx_status_comun'),
-    models.Index(fields=['status', 'dthinscricao'], name='idx_status_dt_comun'),
-]
+# ✅ Correto
+inscritos = Inscritocomunidade.objects.prefetch_related('tipoterapias')
 ```
 
-**Por que foi necessário:**
-- Queries de busca por cargo eram full table scan
-- Filtros por status em prontuários eram lentos
-- Busca de inscritos por CPF não otimizada
-- Dashboards com múltiplas JOINs
+### 3. **Configuração de Upload Otimizada**
 
-**Ganhos de Performance:**
-- ✅ Busca por cargo: ~70% mais rápida
-- ✅ Listagem de prontuários: ~60% mais rápida
-- ✅ Consulta de inscritos: ~50% mais rápida
-- ✅ Dashboards: redução de 8-10 queries para 3-4 queries
-
----
-
-### 2. **Otimização de Queries ORM**
-
-As views já implementavam `select_related()` e `prefetch_related()` em vários lugares, o que foi mantido e está correto:
-
-**Exemplos existentes:**
 ```python
-# estagiario/views.py
-prontuarios = Prontuario.objects.filter(estagiario=request.user)\
-    .select_related('paciente_comunidade', 'paciente_convenio')\
-    .prefetch_related(
-        'paciente_comunidade__tipoterapias',
-        'paciente_convenio__tipoterapia_set'
-    )
-
-# RespTecn/views.py
-queryset = Prontuario.objects.filter(status_ativo=True).select_related(
-    'estagiario', 
-    'estagiario__supervisor_vinculado',
-    'paciente_comunidade', 
-    'paciente_convenio'
-)
+# Django settings
+FILE_UPLOAD_MAX_MEMORY_SIZE = 5242880  # 5 MB
+DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880
 ```
 
-**Análise:**
-- ✅ Uso correto de `select_related()` para ForeignKeys
-- ✅ Uso correto de `prefetch_related()` para relações Many-to-Many
-- ✅ Redução de N+1 queries
+### 4. **Cache e Session**
 
----
-
-### 3. **Configurações de Upload Otimizadas**
-
-#### Arquivo Modificado: `settings.py`
-
-**O que foi adicionado:**
 ```python
-# Tamanho máximo de upload (10MB para TCLE e documentos)
-DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10MB
-FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10MB
-
-# Configurações de Media
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
-```
-
-**Por que foi necessário:**
-- Limite de upload para evitar sobrecarga do servidor
-- Organização de arquivos TCLE e documentos de pacientes
-- Proteção contra ataques de DoS via upload
-
----
-
-### 4. **Timezone e Internacionalização**
-
-#### Arquivo Modificado: `settings.py`
-
-**O que foi alterado:**
-```python
-LANGUAGE_CODE = "pt-br"
-TIME_ZONE = "America/Sao_Paulo"
-USE_I18N = True
-USE_TZ = True
-```
-
-**Por que foi necessário:**
-- Datas e horas no horário de Brasília
-- Interface em português
-- Conformidade com requisitos do Brasil
-
----
-
-## 🛡 Conformidade com LGPD
-
-### Princípios Aplicados
-
-#### 1. **Minimização de Dados**
-- ✅ Coleta apenas dados necessários para atendimento
-- ✅ Formulários validam obrigatoriedade de campos
-- ✅ Mascaramento de dados sensíveis em exibições
-
-#### 2. **Necessidade**
-- ✅ Controle de acesso por cargo (RBAC)
-- ✅ Estagiários veem apenas seus pacientes
-- ✅ Supervisores veem apenas estagiários sob supervisão
-- ✅ RT e Coordenador têm acesso amplo justificado
-
-#### 3. **Confidencialidade**
-- ✅ Senhas hasheadas (PBKDF2)
-- ✅ Sessões com timeout (1 hora)
-- ✅ Cookies HTTPOnly e Secure
-- ✅ Logs sem dados pessoais
-
-#### 4. **Rastreabilidade**
-- ✅ Middleware de auditoria registra acessos
-- ✅ Logs de segurança separados
-- ✅ Registro de criação/modificação de dados (campos `dth_insert`, `criado_por`)
-
-#### 5. **Direito ao Esquecimento**
-
-#### Arquivo Criado: `formulario/management/commands/anonimizar_dados_inativos.py`
-
-**Comando de Anonimização:**
-```bash
-python manage.py anonimizar_dados_inativos --dias=1095 --dry-run
-```
-
-**Funcionalidade:**
-- Identifica inscritos sem prontuário ativo há mais de 3 anos (padrão LGPD)
-- Anonimiza dados pessoais (nome, CPF, email, telefone)
-- Mantém estrutura estatística sem identificação
-- Modo dry-run para simulação
-
-**Exemplo de anonimização:**
-```python
-# ANTES
-nome: "João da Silva"
-cpf: "12345678900"
-email: "joao@exemplo.com"
-
-# DEPOIS
-nome: "ANONIMIZADO_123"
-cpf: "00000000123"
-email: "anonimizado123@lgpd.local"
+# Configuração de session em banco (melhor para múltiplos servidores)
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 ```
 
 ---
 
-### Registros de Conformidade
+## 📋 Conformidade com LGPD
 
-#### Criação de Diretório de Logs
+### Artigos Implementados
 
-**Diretório criado:** `clinicaps/logs/`
+**Lei 13.709/2018 (LGPD)**
 
-**Arquivos gerados:**
-- `clinica.log`: Logs gerais
-- `security.log`: Logs de acesso a dados sensíveis
+1. **Art. 37 - Auditoria**: ✅ Implementado middleware de auditoria
+2. **Art. 46 - Minimização**: ✅ Mascaramento de dados sensíveis
+3. **Direito ao Esquecimento**: ✅ Comando de anonimização
+4. **Acesso Controlado**: ✅ RBAC por cargo
 
-**Rotação automática:**
-- Máximo 5MB por arquivo
-- 10 backups para security.log
-- 5 backups para clinica.log
+### Dados Sensíveis Protegidos
 
----
+1. **Dados de Saúde Mental**:
+   - Motivos de acompanhamento (ansiedade, depressão, etc.)
+   - Medicamentos psiquiátricos
+   - Histórico de doenças
+   - Evolução de atendimentos
 
-## 📦 Instalação e Configuração
+2. **Dados Pessoais**:
+   - CPF (mascarado em exibições)
+   - Email (mascarado em logs)
+   - Telefone (mascarado em exibições)
+   - Endereço completo
 
-## 🎬 Roteiro de Vídeo (Ambiente de Testes)
-
-Para gravar ou seguir um passo a passo focado em preparação de ambiente para testes,
-consulte o arquivo:
-
-- [ROTEIRO_VIDEO_AMBIENTE_TESTES.md](ROTEIRO_VIDEO_AMBIENTE_TESTES.md)
-
-### Pré-requisitos
-
-- Python 3.13+
-- PostgreSQL 12+
-- Git
-
-### Passo 1: Clone o Repositório
-
-```bash
-git clone https://github.com/devops-softhub/clinica-de-psicologia.git
-cd clinica-de-psicologia/clinica-de-psicologia/clinicaps
-```
-
-### Passo 2: Crie um Ambiente Virtual
-
-```bash
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-# ou
-venv\Scripts\activate  # Windows
-```
-
-### Passo 3: Instale as Dependências
-
-```bash
-pip install -r requirements.txt
-```
-
-### Passo 4: Configure o Banco de Dados PostgreSQL
-
-```bash
-# No PostgreSQL, crie o banco:
-CREATE DATABASE clinica_psicologia;
-CREATE USER postgres WITH PASSWORD 'sua_senha';
-GRANT ALL PRIVILEGES ON DATABASE clinica_psicologia TO postgres;
-```
-
-### Passo 5: Configure as Variáveis de Ambiente
-
-```bash
-cp .env.example .env
-# Edite o .env com suas configurações
-```
-
-**Arquivo .env (exemplo):**
-```env
-SECRET_KEY=sua-chave-secreta-aqui
-DEBUG=True
-ALLOWED_HOSTS=127.0.0.1,localhost
-
-DB_NAME=clinica_psicologia
-DB_USER=postgres
-DB_PASSWORD=sua_senha
-DB_HOST=localhost
-DB_PORT=5432
-```
-
-### Passo 6: Execute as Migrações
-
-```bash
-python manage.py makemigrations
-python manage.py migrate
-```
-
-### Passo 7: Crie os Índices de Performance
-
-```bash
-# Os índices são criados automaticamente pelas migrações
-# Verifique no PostgreSQL:
-psql -d clinica_psicologia -c "\d+ usuario"
-```
-
-### Passo 8: Crie um Superusuário
-
-```bash
-python manage.py createsuperuser
-```
-
-### Passo 9: Popule o Banco (Opcional)
-
-```bash
-# Para dados de teste:
-python seed_users.py
-python seed_inscritos.py
-```
-
-### Passo 10: Execute o Servidor
-
-```bash
-python manage.py runserver
-```
-
-Acesse: `http://127.0.0.1:8000`
+3. **Dados Biométricos/Identidade**:
+   - Identidade de gênero
+   - Etnia
+   - Religião
 
 ---
 
-## 🎮 Uso do Sistema
+## 🎥 Roteiro de Vídeo (Ambiente de Testes)
 
-### Acessos por Cargo
+Veja o arquivo `ROTEIRO_VIDEO_AMBIENTE_TESTES.md` para instruções detalhadas de como gravar vídeos de demonstração do sistema.
 
-#### 1. **Coordenador** (`COORD`)
-- **Login:** Matrícula + Senha
-- **Dashboard:** `/coordenador/`
-- **Permissões:**
-  - ✅ Criar, editar, deletar usuários (SUPER, ESTAG, SEC, RT)
-  - ✅ Visualizar todos os prontuários
-  - ✅ Gerar relatórios institucionais
+---
 
-#### 2. **Responsável Técnica** (`RESP_TEC`)
-- **Login:** Matrícula + Senha
-- **Dashboard:** `/resptecn/`
-- **Permissões:**
-  - ✅ Visualizar TODOS os inscritos (com ou sem estagiário)
-  - ✅ Visualizar todos os prontuários ativos
-  - ✅ Visualizar lista de supervisores
-  - ✅ Gerar relatórios
+## 💻 Uso do Sistema
 
-#### 3. **Supervisor** (`SUPER`)
-- **Login:** Matrícula + Senha
-- **Dashboard:** `/supervisor/`
-- **Permissões:**
-  - ✅ Visualizar estagiários sob supervisão
-  - ✅ Visualizar prontuários dos estagiários supervisionados
-  - ✅ Validar arquivamentos
+### Login no Sistema
 
-#### 4. **Estagiário** (`ESTAG`)
-- **Login:** Matrícula (RA) + Senha
-- **Dashboard:** `/estagiario/`
-- **Permissões:**
-  - ✅ Consultar inscritos disponíveis
-  - ✅ Vincular inscrito (criar prontuário)
-  - ✅ Upload de TCLE assinado
-  - ✅ Registrar evolução de atendimentos
-  - ✅ Visualizar apenas SEUS pacientes
+1. Acesse: `http://localhost:8000`
+2. Use as credenciais do superusuário criado
 
-#### 5. **Comunidade** (Sem login)
-- **Formulários públicos:**
-  - `/formulario/comunidade/` - Inscrição Comunidade
-  - `/formulario/convenio/` - Inscrição Convênio
-  - `/formulario/teste/` - Testes Psicológicos
+### Cargos e Permissões
+
+| Cargo | Acesso |
+|-------|--------|
+| **Coordenador** | Dashboard completo, CRUD de usuários, relatórios |
+| **Supervisor** | Validação de atendimentos, supervisão |
+| **RT (Resp. Técnica)** | Dashboard institucional, auditoria |
+| **Estagiário** | Consulta de inscritos, registro de atendimentos |
+| **Comunidade** | Preenchimento de formulários de inscrição |
+
+### Funcionalidades Principais
+
+#### Para Estagiários
+- Consultar inscritos
+- Registrar atendimentos
+- Preencher evolução de prontuários
+
+#### Para Coordenadores
+- Gerenciar usuários
+- Visualizar relatórios
+- Configurar sistema
+
+#### Para Supervisores
+- Supervisionar atendimentos
+- Validar registros
 
 ---
 
 ## 🔧 Comandos Importantes
 
-### Desenvolvimento
+### Gerenciamento do Django
 
 ```bash
-# Criar migrações
-python manage.py makemigrations
-
-# Aplicar migrações
-python manage.py migrate
-
-# Executar servidor
-python manage.py runserver
-
-# Shell interativo
-python manage.py shell
-
-# Verificar configuração
-python manage.py check
-```
-
-### Segurança e LGPD
-
-```bash
-# Anonimizar dados inativos (dry-run)
-python manage.py anonimizar_dados_inativos --dias=1095 --dry-run
-
-# Anonimizar dados inativos (execução real)
-python manage.py anonimizar_dados_inativos --dias=1095
-
-# Verificar logs de segurança
-tail -f logs/security.log
-
-# Verificar logs gerais
-tail -f logs/clinica.log
-```
-
-### Testes
-
-```bash
-# Executar todos os testes
-python manage.py test
-
-# Executar testes de um app específico
-python manage.py test estagiario
-
-# Executar com cobertura (instalar coverage)
-coverage run --source='.' manage.py test
-coverage report
-```
-
-### Produção
-
-```bash
-# Coletar arquivos estáticos
-python manage.py collectstatic --noinput
-
-# Verificar deployment
-python manage.py check --deploy
-
 # Criar superusuário
-python manage.py createsuperuser
+docker compose exec web python manage.py createsuperuser
+
+# Executar migrações
+docker compose exec web python manage.py migrate
+
+# Fazer rollback de migração
+docker compose exec web python manage.py migrate <app> <numero_anterior>
+
+# Shell interativo Django
+docker compose exec web python manage.py shell
+
+# Coletar arquivos estáticos
+docker compose exec web python manage.py collectstatic --noinput
+
+# Limpar cache
+docker compose exec web python manage.py clear_cache
+```
+
+### Comandos Personalizados
+
+```bash
+# Anonimizar dados inativos (LGPD - Direito ao esquecimento)
+docker compose exec web python manage.py anonimizar_dados_inativos --dias=1095
+
+# Ver inscritos inativos sem deletar
+docker compose exec web python manage.py anonimizar_dados_inativos --dias=1095 --dry-run
+```
+
+### Gerenciamento de Banco de Dados
+
+```bash
+# Backup do banco
+docker compose exec postgres pg_dump -U postgres clinica_psicologia > backup.sql
+
+# Restaurar backup
+docker compose exec -T postgres psql -U postgres clinica_psicologia < backup.sql
+
+# Conectar ao PostgreSQL
+docker compose exec postgres psql -U postgres -d clinica_psicologia
 ```
 
 ---
@@ -708,63 +605,78 @@ python manage.py createsuperuser
 
 ```
 clinica-de-psicologia/
-└── clinicaps/                      # Projeto Django principal
-    ├── manage.py                   # Script de gerenciamento Django
-    ├── requirements.txt            # ⭐ Dependências (atualizado)
-    ├── .env.example                # ⭐ Exemplo de configuração (atualizado)
-    ├── .gitignore                  # ⭐ Proteção de arquivos sensíveis (novo)
-    │
-    ├── clinicaps/                  # Configuração do projeto
-    │   ├── settings.py             # ⭐ Configurações (modificado)
-    │   ├── urls.py                 # URLs principais
-    │   ├── middleware.py           # ⭐ Middleware de auditoria (novo)
-    │   └── wsgi.py                 # WSGI para produção
-    │
-    ├── logs/                       # ⭐ Logs do sistema (novo)
-    │   ├── .gitkeep
-    │   ├── clinica.log             # Log geral
-    │   └── security.log            # Log de segurança
-    │
-    ├── media/                      # Uploads (TCLE, documentos)
-    │   └── tcle/
-    │
-    ├── usuarios/                   # App de autenticação e usuários
-    │   ├── models.py               # ⭐ Modelo Usuario (índices adicionados)
-    │   ├── views.py                # Views de login/cadastro
-    │   ├── forms.py                # Formulários de usuário
-    │   ├── decorators.py           # ⭐ Decorators de segurança (novo)
-    │   ├── utils.py                # ⭐ Utilitários LGPD (novo)
-    │   └── templates/
-    │
-    ├── formulario/                 # App de formulários públicos
-    │   ├── models.py               # ⭐ Modelos de inscritos (índices)
-    │   ├── views.py                # Views de formulários
-    │   ├── forms.py                # Formulários de inscrição
-    │   ├── management/             # ⭐ Comandos personalizados (novo)
-    │   │   └── commands/
-    │   │       └── anonimizar_dados_inativos.py
-    │   └── templates/
-    │
-    ├── coodernador/                # App do Coordenador
-    │   ├── models.py               # ⭐ Prontuário e Evolução (índices)
-    │   ├── views.py                # Dashboard e CRUD
-    │   └── templates/
-    │
-    ├── estagiario/                 # App do Estagiário
-    │   ├── views.py                # Consulta inscritos, prontuários
-    │   ├── forms.py                # Formulário de relato de sessão
-    │   └── templates/
-    │
-    ├── Supervisor/                 # App do Supervisor
-    │   ├── views.py                # Dashboard e validações
-    │   └── templates/
-    │
-    ├── RespTecn/                   # App da Responsável Técnica
-    │   ├── views.py                # Dashboard institucional
-    │   └── templates/
-    │
-    └── templates/                  # Templates globais
-        └── base.html
+├── docker-compose.yml          # ⭐ Orquestração de containers
+├── Dockerfile                  # ⭐ Imagem Docker da aplicação
+├── entrypoint.sh              # ⭐ Script de inicialização
+├── requirements.txt           # Dependências Python
+├── .env.example               # Exemplo de variáveis de ambiente
+├── .gitignore                 # Arquivos ignorados pelo Git
+├── manage.py                  # CLI do Django
+│
+├── clinicaps/                 # Configuração principal do Django
+│   ├── settings.py            # ⭐ Configurações (logs, segurança)
+│   ├── urls.py                # Roteamento principal
+│   ├── wsgi.py                # WSGI para produção
+│   ├── asgi.py                # ASGI para async
+│   ├── middleware.py          # ⭐ Middleware de auditoria LGPD
+│   ├── .gitignore             # ⭐ Proteção de sensíveis
+│   └── __init__.py
+│
+├── usuarios/                  # App de gerenciamento de usuários
+│   ├── models.py              # Modelos de usuário
+│   ├── views.py               # Views e lógica
+│   ├── forms.py               # Formulários
+│   ├── decorators.py          # ⭐ Decorators RBAC
+│   ├── utils.py               # ⭐ Funções de mascaramento LGPD
+│   ├── management/            # ⭐ Comandos personalizados
+│   │   └── commands/
+│   └── templates/
+│
+├── formulario/                # App de formulários públicos
+│   ├── models.py              # ⭐ Modelos de inscritos (índices)
+│   ├── views.py               # Views de formulários
+│   ├── forms.py               # Formulários de inscrição
+│   ├── management/            # ⭐ Comandos personalizados (novo)
+│   │   └── commands/
+│   │       └── anonimizar_dados_inativos.py
+│   └── templates/
+│
+├── coordernador/              # App do Coordenador
+│   ├── models.py              # ⭐ Prontuário e Evolução (índices)
+│   ├── views.py               # Dashboard e CRUD
+│   └── templates/
+│
+├── estagiario/                # App do Estagiário
+│   ├── views.py               # Consulta inscritos, prontuários
+│   ├── forms.py               # Formulário de relato de sessão
+│   └── templates/
+│
+├── Supervisor/                # App do Supervisor
+│   ├── views.py               # Dashboard e validações
+│   └── templates/
+│
+├── RespTecn/                  # App da Responsável Técnica
+│   ├── views.py               # Dashboard institucional
+│   └── templates/
+│
+├── static/                    # Arquivos estáticos (CSS, JS, imagens)
+│   ├── css/
+│   ├── js/
+│   └── images/
+│
+├── media/                     # Uploads de usuários (TCLE, documentos)
+│
+├── logs/                      # Arquivos de log
+│   ├── clinica.log
+│   ├── security.log
+│   └── .gitkeep
+│
+├── doc/                       # Documentação do projeto
+│
+├── templates/                 # Templates globais
+│   └── base.html
+│
+└── infra_banco/              # Scripts de banco de dados
 ```
 
 ---
@@ -790,13 +702,13 @@ clinica-de-psicologia/
 
 4. **Revise logs periodicamente**
    ```bash
-   tail -100 logs/security.log | grep "WARNING"
+   docker compose exec web tail -100 logs/security.log | grep "WARNING"
    ```
 
 5. **Execute anonimização regularmente**
    ```bash
    # Recomendado: 1x por ano
-   python manage.py anonimizar_dados_inativos --dias=1095
+   docker compose exec web python manage.py anonimizar_dados_inativos --dias=1095
    ```
 
 ### Performance
@@ -884,6 +796,8 @@ Antes de fazer deploy em produção, verifique:
 - [ ] Monitoramento de erros configurado
 - [ ] Política de backup de media (TCLE, uploads)
 - [ ] Cronograma de anonimização de dados
+- [ ] Docker Compose volumes configurados corretamente
+- [ ] Backup automático de PostgreSQL container
 
 ---
 
@@ -908,14 +822,17 @@ MIDDLEWARE = [
 
 ### Erro: "Could not connect to PostgreSQL"
 ```bash
-# Verifique se o PostgreSQL está rodando
-sudo service postgresql status
+# Verifique se o container PostgreSQL está rodando
+docker compose ps
+
+# Ver logs do PostgreSQL
+docker compose logs postgres
 
 # Verifique as credenciais no .env
 DB_NAME=clinica_psicologia
 DB_USER=postgres
 DB_PASSWORD=sua_senha
-DB_HOST=localhost
+DB_HOST=postgres
 DB_PORT=5432
 ```
 
@@ -924,12 +841,44 @@ DB_PORT=5432
 # Crie o diretório de logs manualmente
 mkdir -p logs
 touch logs/.gitkeep
+
+# Verifique permissões
+chmod 755 logs
 ```
 
 ### Sessão expira muito rápido
 ```python
 # Ajuste em settings.py
 SESSION_COOKIE_AGE = 3600  # 1 hora (em segundos)
+```
+
+### Container não inicia
+```bash
+# Ver logs detalhados
+docker compose logs web
+
+# Rebuild do container
+docker compose build --no-cache
+docker compose up -d
+```
+
+### Port 8000 already in use
+```bash
+# Liberar porta ou usar porta diferente
+# No docker-compose.yml, altere:
+# ports:
+#   - "8001:8000"  # usar 8001 em vez de 8000
+
+# Ou finalize o container anterior
+docker compose down
+```
+
+### Database locked ou erro de migration
+```bash
+# Resetar database (cuidado - apaga tudo)
+docker compose down -v
+docker compose up -d
+docker compose exec web python manage.py migrate
 ```
 
 ---
@@ -947,37 +896,35 @@ Este sistema foi otimizado para:
 - ✅ **Conformidade total** com LGPD
 - ✅ **Performance** em ambientes de produção
 - ✅ **Manutenibilidade** e escalabilidade
-
-### Dados Sensíveis Protegidos
-
-Segundo a LGPD, os seguintes dados são considerados **sensíveis** e receberam atenção especial:
-
-1. **Dados de Saúde Mental**:
-   - Motivos de acompanhamento (ansiedade, depressão, etc.)
-   - Medicamentos psiquiátricos
-   - Histórico de doenças
-   - Evolução de atendimentos
-
-2. **Dados Pessoais**:
-   - CPF (mascarado em exibições)
-   - Email (mascarado em logs)
-   - Telefone (mascarado em exibições)
-   - Endereço completo
-
-3. **Dados Biométricos/Identidade**:
-   - Identidade de gênero
-   - Etnia
-   - Religião
-
-**Todas as medidas de segurança implementadas visam proteger esses dados conforme a Lei 13.709/2018 (LGPD).**
-
----
+- ✅ **Facilidade de deploy** com Docker Compose
 
 **Desenvolvido com ❤️ e atenção à segurança e privacidade dos pacientes.**
 
 ---
 
 ## 📝 Changelog
+
+### Versão 3.0 (Abril de 2026) - Docker Compose & Otimizações
+
+**Docker:**
+- ✅ Docker Compose completo (web + PostgreSQL)
+- ✅ Dockerfile otimizado com multi-stage
+- ✅ Volumes persistentes para dados
+- ✅ Entrypoint script para migrations automáticas
+- ✅ Networking seguro entre containers
+
+**Documentação:**
+- ✅ Instruções detalhadas de instalação com Docker
+- ✅ Comandos úteis para desenvolvimento
+- ✅ Troubleshooting de containers
+- ✅ Backup e restore de banco de dados
+
+**Melhorias:**
+- ✅ README.md formatado corretamente
+- ✅ Suporte a produção (Gunicorn)
+- ✅ Variáveis de ambiente bem documentadas
+
+---
 
 ### Versão 2.0 (15 de Dezembro de 2025) - Otimização, Segurança e LGPD
 
@@ -1009,8 +956,8 @@ Segundo a LGPD, os seguintes dados são considerados **sensíveis** e receberam 
 
 ---
 
-**Total de Alterações:**
+**Total de Alterações (v2.0 - v3.0):**
 - **7 arquivos modificados**
 - **9 arquivos novos criados**
 - **4 diretórios criados**
-- **36 mudanças implementadas**
+- **36+ mudanças implementadas**
