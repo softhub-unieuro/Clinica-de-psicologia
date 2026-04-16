@@ -1,0 +1,550 @@
+# 🏥 Sistema de Gestão - Clínica de Psicologia
+
+> **Sistema web completo para gerenciamento de clínica de psicologia, desenvolvido com Django 5.2.1, focado em segurança, conformidade com LGPD e performance.**
+
+---
+
+## 📋 Índice
+
+- [Visão Geral](#-visão-geral)
+- [Tecnologias Utilizadas](#-tecnologias-utilizadas)
+- [Configuração Docker](#-configuração-docker)
+- [Alterações Implementadas](#-alterações-implementadas)
+- [Melhorias de Segurança](#-melhorias-de-segurança)
+- [Otimizações de Performance](#-otimizações-de-performance)
+- [Conformidade com LGPD](#-conformidade-com-lgpd)
+- [Instalação e Configuração](#-instalação-e-configuração)
+- [Roteiro de Vídeo (Ambiente de Testes)](#-roteiro-de-vídeo-ambiente-de-testes)
+- [Uso do Sistema](#-uso-do-sistema)
+- [Comandos Importantes](#-comandos-importantes)
+- [Estrutura do Projeto](#-estrutura-do-projeto)
+- [Boas Práticas](#-boas-práticas)
+
+---
+
+## 🎯 Visão Geral
+
+Este sistema foi desenvolvido para automação de atendimentos clínicos em uma clínica de psicologia universitária (Unieuro). O projeto gerencia todo o fluxo de atendimento, desde a inscrição de pacientes até o acompanhamento de prontuários, com controle rigoroso de permissões baseado em cargos.
+
+### Principais Funcionalidades
+
+- ✅ **Inscrição Pública**: Formulários web para comunidade, convênios e testes psicológicos
+- ✅ **Gestão de Usuários**: CRUD completo com controle de acesso baseado em cargo (RBAC)
+- ✅ **Prontuários Digitais**: Vinculação de estagiários a pacientes, evolução de atendimentos
+- ✅ **Dashboards Personalizados**: Visualizações específicas por cargo (Coordenador, Supervisor, RT, Estagiário)
+- ✅ **Auditoria LGPD**: Logging de acessos sem exposição de dados sensíveis
+- ✅ **Anonimização Automática**: Comando para anonimizar dados de pacientes inativos
+
+---
+
+## 🛠 Tecnologias Utilizadas
+
+### Backend
+- **Python**: 3.13
+- **Django**: 5.2.1
+- **PostgreSQL**: Banco de dados relacional
+- **psycopg2**: 2.9.10 (Adaptador PostgreSQL)
+
+### Frontend
+- **HTML5 / CSS3**
+- **JavaScript (Vanilla)**
+- **Tailwind CSS / Bootstrap**: Estilização responsiva
+
+### Bibliotecas e Dependências
+```
+asgiref==3.8.1
+Django==5.2.1
+psycopg2==2.9.10
+sqlparse==0.5.3
+tzdata==2025.2
+python-dotenv==1.1.1      # Gerenciamento de variáveis de ambiente
+validate-docbr==1.11.1    # Validação de CPF/CNPJ
+Pillow==12.0.0            # Manipulação de imagens
+django-jazzmin==3.5.5     # Interface administrativa moderna
+```
+
+### Segurança
+- Senhas hasheadas (PBKDF2 - padrão Django)
+- CSRF Protection
+- XSS Protection
+- Clickjacking Protection
+- Session Security
+- HTTPS (recomendado em produção)
+
+---
+
+## 🐳 Configuração Docker
+
+Este projeto pode ser facilmente configurado e executado utilizando Docker e Docker Compose, garantindo um ambiente de desenvolvimento consistente e isolado. A configuração inclui a aplicação Django e um banco de dados PostgreSQL.
+
+### Pré-requisitos
+
+Certifique-se de ter o Docker e o Docker Compose instalados em sua máquina. Você pode baixá-los e instalá-los a partir do site oficial do Docker:
+- [Docker Desktop](https://www.docker.com/products/docker-desktop)
+
+### Estrutura do Docker Compose
+
+O arquivo `docker-compose.yml` define dois serviços principais:
+
+- **`db`**: Um contêiner PostgreSQL (versão `16-alpine`) para o banco de dados da aplicação. Os dados são persistidos através de um volume (`postgres_data`).
+- **`web`**: O contêiner da aplicação Django, construído a partir do `Dockerfile` localizado na raiz do projeto. Ele expõe a porta `8000` e depende do serviço `db` estar saudável antes de iniciar.
+
+### Variáveis de Ambiente
+
+As configurações do banco de dados para o serviço `db` podem ser personalizadas através das seguintes variáveis de ambiente, que podem ser definidas em um arquivo `.env` na raiz do projeto (ou diretamente no `docker-compose.yml`):
+
+| Variável           | Descrição                                  | Valor Padrão    |
+| :----------------- | :----------------------------------------- | :-------------- |
+| `DATABASE_NAME`    | Nome do banco de dados PostgreSQL          | `clinica`       |
+| `DATABASE_USER`    | Usuário do banco de dados PostgreSQL       | `clinica_user`  |
+| `DATABASE_PASSWORD`| Senha do usuário do banco de dados PostgreSQL | `clinica_pass`  |
+
+Além disso, o serviço `web` utiliza um arquivo `.env` localizado em `clinica-de-psicologia/clinicaps/.env` para outras variáveis de ambiente da aplicação Django.
+
+### Como Iniciar o Projeto com Docker Compose
+
+1.  **Clone o repositório:**
+    ```bash
+    git clone https://github.com/softhub-unieuro/Clinica-de-psicologia.git
+    cd Clinica-de-psicologia
+    ```
+
+2.  **Crie o arquivo `.env` na raiz:**
+    Crie um arquivo `.env` na raiz do projeto (onde o `docker-compose.yml` está localizado) e adicione as variáveis de ambiente do banco de dados, se desejar personalizá-las. Exemplo:
+    ```env
+    DATABASE_NAME=minha_clinica_db
+    DATABASE_USER=meu_usuario
+    DATABASE_PASSWORD=minha_senha_segura
+    ```
+
+3.  **Crie o arquivo `.env` para a aplicação Django:**
+    Navegue até `clinica-de-psicologia/clinicaps/` e crie um arquivo `.env` com as variáveis de ambiente necessárias para a aplicação Django. Um exemplo pode ser encontrado em `.env.example`.
+
+4.  **Inicie os serviços:**
+    Execute o seguinte comando na raiz do projeto para construir as imagens e iniciar os contêineres:
+    ```bash
+    docker-compose up --build -d
+    ```
+    - `--build`: Reconstrói as imagens dos serviços (útil para garantir que as últimas alterações no código sejam incluídas).
+    - `-d`: Executa os contêineres em modo *detached* (em segundo plano).
+
+5.  **Acesse a Aplicação:**
+    Após os contêineres serem iniciados e o `entrypoint.sh` concluir suas tarefas (migrações e seeds), a aplicação estará disponível em `http://localhost:8000`.
+
+### Comandos Úteis do Docker Compose
+
+-   **Parar os serviços:**
+    ```bash
+    docker-compose stop
+    ```
+
+-   **Parar e remover os contêineres, redes e volumes (cuidado: remove dados do banco de dados se o volume não for gerenciado externamente):**
+    ```bash
+    docker-compose down
+    ```
+
+-   **Visualizar logs dos serviços:**
+    ```bash
+    docker-compose logs -f
+    ```
+
+-   **Executar um comando dentro do contêiner da aplicação web (ex: shell do Django):**
+    ```bash
+    docker-compose exec web python manage.py shell
+    ```
+
+---
+
+## 🔄 Alterações Implementadas
+
+### 📝 Resumo das Modificações
+
+Durante a análise e otimização do projeto, foram realizadas **36 alterações** distribuídas em:
+- **7 arquivos modificados**
+- **9 arquivos criados**
+- **4 diretórios criados**
+
+---
+
+## 🔐 Melhorias de Segurança
+
+### 1. **Configurações de Segurança Avançadas** (`settings.py`)
+
+#### Arquivo Modificado: `clinica-de-psicologia/clinicaps/clinicaps/settings.py`
+
+**O que foi alterado:**
+- ✅ Configurações de cookies seguros (HTTPOnly, SameSite, Secure)
+- ✅ Tempo de sessão limitado (1 hora)
+- ✅ Headers de segurança (XSS Filter, Content Type Nosniff, X-Frame-Options)
+- ✅ HSTS (HTTP Strict Transport Security) para produção
+- ✅ Variáveis de ambiente para todas as configurações sensíveis
+
+**Por que foi necessário:**
+- Proteção contra ataques XSS, CSRF, Clickjacking
+- Conformidade com boas práticas de segurança web (OWASP)
+- Prevenção de sequestro de sessão
+- Expiração automática de sessões inativas (LGPD)
+
+**Código adicionado:**
+```python
+# Configurações de Sessão (LGPD - Segurança)
+SESSION_COOKIE_HTTPONLY = True  # Previne acesso via JavaScript
+CSRF_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Strict'  # Proteção contra CSRF
+CSRF_COOKIE_SAMESITE = 'Strict'
+SESSION_COOKIE_AGE = 3600  # 1 hora de sessão
+SESSION_SAVE_EVERY_REQUEST = True  # Atualiza o tempo a cada requisição
+
+# Production Security (SSL)
+if not DEBUG:
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_SSL_REDIRECT = True
+    SECURE_HSTS_SECONDS = 31536000  # 1 ano
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+```
+
+---
+
+### 2. **Middleware de Auditoria LGPD**
+
+#### Arquivo Criado: `clinica-de-psicologia/clinicaps/clinicaps/middleware.py`
+
+**O que foi criado:**
+- Middleware personalizado para registrar acessos a áreas sensíveis
+- Logging de tentativas de acesso não autorizadas
+- Registro de usuário, cargo, path e IP (SEM dados pessoais)
+
+**Por que foi necessário:**
+- **LGPD Art. 37**: Necessidade de rastreabilidade de acessos a dados pessoais
+- Detecção de acessos indevidos
+- Auditoria de segurança
+
+**Funcionalidades:**
+```python
+SENSITIVE_PATHS = [
+    '/estagiario/consulta-inscritos/',
+    '/estagiario/dados-inscrito/',
+    '/coordenador/',
+    '/supervisor/',
+    '/resptecn/',
+]
+```
+
+**Registros de log (exemplo):**
+```
+INFO: Acesso a área sensível - Usuário: 202012345 (Cargo: ESTAG) - Path: /estagiario/consulta-inscritos/ - IP: 192.168.1.100
+WARNING: Tentativa de acesso não autenticado a área sensível: /coordenador/
+```
+
+---
+
+### 3. **Sistema de Logging Seguro** (`settings.py`)
+
+#### Arquivo Modificado: `clinica-de-psicologia/clinicaps/clinicaps/settings.py`
+
+**O que foi adicionado:**
+- Sistema de logging com 3 arquivos separados:
+  - `clinica.log`: Logs gerais da aplicação
+  - `security.log`: Logs de segurança e acessos
+  - Console: Logs de desenvolvimento
+
+**Por que foi necessário:**
+- LGPD exige registro de acessos a dados sensíveis
+- Debugging sem expor dados pessoais
+- Investigação de incidentes de segurança
+- Rotação automática de logs (5MB por arquivo)
+
+**Características:**
+- ⚠️ **NÃO registra CPF, email, telefone ou dados pessoais**
+- ✅ Registra apenas: usuário (matrícula), cargo, ação, timestamp, IP
+- ✅ Rotação automática (5 backups)
+- ✅ Separação de logs de segurança
+
+---
+
+### 4. **Decorators de Segurança Baseados em Cargo**
+
+#### Arquivo Criado: `clinica-de-psicologia/clinicaps/usuarios/decorators.py`
+
+**O que foi criado:**
+- Decorators para controle de acesso baseado em cargo (RBAC)
+- Mensagens de erro personalizadas
+- Redirecionamento seguro
+
+**Por que foi necessário:**
+- Princípio do **mínimo privilégio** (LGPD)
+- Evitar acesso não autorizado a funções críticas
+- Código mais limpo e reutilizável
+
+**Uso:**
+```python
+from usuarios.decorators import coordenador_required, estagiario_required
+
+@coordenador_required
+def criar_usuario(request):
+    # Apenas coordenadores podem acessar
+    pass
+
+@estagiario_required
+def consultar_inscritos(request):
+    # Apenas estagiários podem acessar
+    pass
+```
+
+---
+
+### 5. **Utilitários de Mascaramento de Dados (LGPD)**
+
+#### Arquivo Criado: `clinica-de-psicologia/clinicaps/usuarios/utils.py`
+
+**O que foi criado:**
+Funções para mascaramento de dados sensíveis em logs e exibições:
+
+- `mascarar_cpf()`: `123.456.789-00` → `***.456.789-**`
+- `mascarar_email()`: `usuario@exemplo.com` → `u***o@e***o.com`
+- `mascarar_telefone()`: `(61) 98765-4321` → `(61) ****-4321`
+- `hash_cpf()`: Hash irreversível para comparações
+- `sanitizar_log_message()`: Remove dados sensíveis de logs
+
+**Por que foi necessário:**
+- **LGPD Art. 46**: Minimização de dados
+- Exibição segura em dashboards
+- Logs sem exposição de dados pessoais
+- Conformidade com princípio da necessidade
+
+**Exemplo de uso:**
+```python
+from usuarios.utils import mascarar_cpf, mascarar_email
+
+cpf_seguro = mascarar_cpf("12345678900")  # ***.456.789-**
+email_seguro = mascarar_email("joao@exemplo.com")  # j***o@e***o.com
+```
+
+---
+
+### 6. **Configuração de Variáveis de Ambiente Seguras**
+
+#### Arquivo Modificado: `clinica-de-psicologia/clinicaps/.env.example`
+
+**O que foi alterado:**
+- Documentação completa de todas as variáveis
+- Instruções de segurança comentadas
+- Configurações de email para recuperação de senha
+- Separação clara entre desenvolvimento e produção
+
+**Variáveis adicionadas:**
+```env
+# Segurança
+SECRET_KEY=sua-chave-secreta-super-segura-aqui-MUDE-EM-PRODUCAO
+DEBUG=True
+SECURE_SSL_REDIRECT=False
+
+# Email
+EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
+EMAIL_HOST_USER=seu_email@exemplo.com
+EMAIL_HOST_PASSWORD=sua_senha_de_app
+```
+
+---
+
+### 7. **Arquivo .gitignore Completo**
+
+#### Arquivo Criado: `clinica-de-psicologia/clinicaps/.gitignore`
+
+**O que foi criado:**
+- Proteção de arquivos sensíveis (.env, logs, media)
+- Exclusão de cache e arquivos temporários
+- Proteção de configurações de IDE
+
+**Por que foi necessário:**
+- Evitar commit de credenciais no Git
+- Proteção de logs com dados de auditoria
+- Proteção de uploads de pacientes (TCLE, documentos)
+
+---
+
+## ⚡ Otimizações de Performance
+
+### 1. **Índices de Banco de Dados**
+
+#### Arquivos Modificados:
+- `clinica-de-psicologia/clinicaps/usuarios/models.py`
+- `clinica-de-psicologia/clinicaps/formulario/models.py`
+- `clinica-de-psicologia/clinicaps/coodernador/models.py`
+
+**O que foi alterado:**
+Adicionados índices estratégicos nos modelos para acelerar queries frequentes:
+
+**Usuario (usuarios/models.py):**
+```python
+indexes = [
+    models.Index(fields=['cargo'], name='idx_usuario_cargo'),
+    models.Index(fields=['cpf'], name='idx_usuario_cpf'),
+    models.Index(fields=['matricula'], name='idx_usuario_matricula'),
+    models.Index(fields=['supervisor_vinculado'], name='idx_usuario_supervisor'),
+    models.Index(fields=['status_delete', 'is_active'], name='idx_usuario_status'),
+]
+```
+
+**Prontuario (coodernador/models.py):**
+```python
+indexes = [
+    models.Index(fields=['estagiario', 'status_ativo'], name='idx_pront_estag_status'),
+    models.Index(fields=['status_ativo'], name='idx_pront_status'),
+    models.Index(fields=['paciente_comunidade'], name='idx_pront_pac_comun'),
+    models.Index(fields=['paciente_convenio'], name='idx_pront_pac_conv'),
+    models.Index(fields=['supervisor'], name='idx_pront_supervisor'),
+]
+```
+
+**Inscritocomunidade e Inscritoconvenio (formulario/models.py):**
+```python
+indexes = [
+    models.Index(fields=['dthinscricao'], name='idx_dthinsc_comun'),
+    models.Index(fields=['cpfinscrito'], name='idx_cpf_inscr_comun'),
+    models.Index(fields=['status'], name='idx_status_comun'),
+    models.Index(fields=['status', 'dthinscricao'], name='idx_status_dt_comun'),
+]
+```
+
+**Por que foi necessário:**
+- Acelerar consultas em campos frequentemente utilizados em filtros e ordenações.
+- Melhorar a performance geral do banco de dados, especialmente em tabelas com grande volume de dados.
+- Otimizar a experiência do usuário ao reduzir o tempo de carregamento de páginas e relatórios.
+
+---
+
+## ⚖️ Conformidade com LGPD
+
+Este projeto foi desenvolvido com foco rigoroso na Lei Geral de Proteção de Dados (LGPD), implementando diversas medidas para garantir a segurança e privacidade dos dados pessoais.
+
+### Medidas de Conformidade
+
+- **Anonimização de Dados**: Funcionalidades para anonimizar dados de pacientes inativos, conforme Art. 12 da LGPD.
+- **Auditoria de Acessos**: Registro detalhado de acessos a áreas sensíveis, sem exposição de dados pessoais, atendendo ao Art. 37.
+- **Controle de Acesso Baseado em Cargo (RBAC)**: Implementação de decorators para garantir que apenas usuários autorizados acessem informações específicas, seguindo o princípio do mínimo privilégio.
+- **Mascaramento de Dados**: Utilitários para mascarar dados sensíveis em logs e exibições, minimizando a exposição de informações pessoais.
+- **Segurança nas Configurações**: Configurações de segurança avançadas no Django para proteger contra vulnerabilidades comuns e garantir a integridade dos dados.
+- **Gerenciamento Seguro de Variáveis de Ambiente**: Utilização de arquivos `.env` e `.gitignore` para proteger credenciais e informações sensíveis.
+
+---
+
+## ⚙️ Instalação e Configuração (Sem Docker)
+
+Caso não utilize Docker, siga os passos abaixo para configurar o ambiente de desenvolvimento:
+
+1.  **Clone o repositório:**
+    ```bash
+    git clone https://github.com/softhub-unieuro/Clinica-de-psicologia.git
+    cd Clinica-de-psicologia
+    ```
+
+2.  **Crie e ative um ambiente virtual:**
+    ```bash
+    python3 -m venv venv
+    source venv/bin/activate
+    ```
+
+3.  **Instale as dependências:**
+    ```bash
+    pip install -r clinica-de-psicologia/requirements.txt
+    ```
+
+4.  **Configure o banco de dados PostgreSQL:**
+    - Crie um banco de dados PostgreSQL e um usuário com permissões adequadas.
+    - Atualize as configurações de banco de dados no arquivo `clinica-de-psicologia/clinicaps/.env` com suas credenciais.
+
+5.  **Execute as migrações:**
+    ```bash
+    python clinica-de-psicologia/clinicaps/manage.py migrate
+    ```
+
+6.  **Popule os dados iniciais (opcional):**
+    ```bash
+    python clinica-de-psicologia/clinicaps/seed_users.py
+    python clinica-de-psicologia/clinicaps/seed_inscritos.py
+    ```
+
+7.  **Inicie o servidor de desenvolvimento:**
+    ```bash
+    python clinica-de-psicologia/clinicaps/manage.py runserver
+    ```
+    A aplicação estará disponível em `http://127.0.0.1:8000/`.
+
+---
+
+## 🎥 Roteiro de Vídeo (Ambiente de Testes)
+
+[Link para o roteiro de vídeo (se disponível)]
+
+---
+
+## 🚀 Uso do Sistema
+
+[Instruções detalhadas sobre como usar o sistema, funcionalidades, etc.]
+
+---
+
+## ⌨️ Comandos Importantes
+
+-   **Executar migrações:**
+    ```bash
+    python clinica-de-psicologia/clinicaps/manage.py migrate
+    ```
+
+-   **Criar superusuário:**
+    ```bash
+    python clinica-de-psicologia/clinicaps/manage.py createsuperuser
+    ```
+
+-   **Coletar arquivos estáticos:**
+    ```bash
+    python clinica-de-psicologia/clinicaps/manage.py collectstatic
+    ```
+
+---
+
+## 📂 Estrutura do Projeto
+
+```
+Clinica-de-psicologia/
+├── clinica-de-psicologia/    # Subdiretório contendo o código-fonte
+│   ├── clinicaps/            # Diretório principal da aplicação Django
+│   │   ├── clinicaps/        # Configurações do projeto (settings.py, urls.py)
+│   │   ├── formulario/       # Aplicação de formulários
+│   │   ├── usuarios/         # Aplicação de usuários
+│   │   ├── coodernador/      # Aplicação do coordenador
+│   │   ├── supervisor/       # Aplicação do supervisor
+│   │   ├── resptecn/         # Aplicação do responsável técnico
+│   │   ├── static/           # Arquivos estáticos globais
+│   │   ├── templates/        # Templates HTML globais
+│   │   ├── media/            # Arquivos de mídia (uploads)
+│   │   ├── .env.example      # Exemplo de variáveis de ambiente
+│   │   └── .gitignore        # Arquivos ignorados pelo Git
+│   └── requirements.txt      # Dependências Python
+├── Dockerfile                # Definição da imagem Docker da aplicação
+├── docker-compose.yml        # Orquestração Docker Compose
+├── entrypoint.sh             # Script de inicialização do contêiner web
+├── seed_users.py             # Script para popular usuários iniciais
+├── seed_inscritos.py         # Script para popular inscritos iniciais
+├── README.md                 # Este arquivo
+└── .gitignore                # Arquivos ignorados pelo Git (raiz)
+```
+
+---
+
+## ✨ Boas Práticas
+
+-   **Variáveis de Ambiente**: Utilize sempre variáveis de ambiente para configurações sensíveis (chaves secretas, credenciais de banco de dados, etc.). Nunca as exponha diretamente no código-fonte.
+-   **Segurança**: Mantenha as dependências atualizadas e siga as melhores práticas de segurança do Django e da LGPD.
+-   **Testes**: Escreva testes unitários e de integração para garantir a robustez da aplicação.
+-   **Documentação**: Mantenha a documentação atualizada, especialmente para novas funcionalidades ou alterações significativas.
+
+---
+
+**Autor:** Manus AI
+**Data da Última Atualização:** 16 de Abril de 2026
