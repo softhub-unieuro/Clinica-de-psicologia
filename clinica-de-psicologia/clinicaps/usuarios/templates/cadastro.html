@@ -17,14 +17,28 @@
 
 <body class="bg-white h-screen w-screen overflow-hidden flex flex-col">
 
-    <!-- Header (Fixo) -->
-    <header class="flex-none bg-white shadow-sm z-10 relative">
-        <div class="flex justify-between items-center px-6 py-4 md:px-10 max-w-7xl mx-auto w-full">
-            <div class="flex items-center">
-                <img src="{% static 'img/Logo1.png' %}" alt="Logo Unieuro" class="h-10 object-contain">
-            </div>
-            <span class="text-blue-900 font-bold text-sm md:text-base">Clínica Psicológica</span>
-        </div>
+   <!-- Header (Fixo e estilizado) -->
+<header class="flex justify-between items-center px-6 py-4 md:px-10 border-b border-gray-200 bg-white shadow-sm">
+
+    <!-- Logo -->
+    <div class="flex items-center">
+        <img src="{% static 'img/Logo1.png' %}" alt="Logo UNIEURO" class="h-12 object-contain">
+    </div>
+
+    <!-- Título -->
+    <h1 class="text-lg md:text-xl font-bold text-[#003366]">
+        Clínica Psicológica
+    </h1>
+
+    <!-- Botão -->
+    <div>
+        <a href="{% url 'login' %}" 
+           class="bg-white text-[#003366] font-semibold px-6 py-2 rounded-md shadow-md hover:bg-blue-100 transition no-underline inline-block">
+            Voltar
+        </a>
+    </div>
+
+</header>
 
         <!-- Barra Azul -->
         <div class="bg-[#003366] w-full py-2 text-center">

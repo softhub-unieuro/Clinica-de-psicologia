@@ -9,6 +9,7 @@ from formulario.models import Inscritocomunidade, Inscritoconvenio, Doencafisica
 from coodernador.models import Prontuario, Evolucao
 from usuarios.models import Usuario
 from .forms import RelatoSessaoForm
+from datetime import date, datetime
 
 @login_required
 def dashboard_estagiario(request):
@@ -200,12 +201,31 @@ def adicionar_evolucao(request):
     if request.method == 'POST':
         id_prontuario = request.POST.get('idprontuario')
         data_atendimento = request.POST.get('data_atendimento')
-        
+
+        # ✅ TRATAMENTO CORRETO DA DATA
+        if data_atendimento:
+            try:
+                data_atendimento = datetime.strptime(data_atendimento, '%Y-%m-%d').date()
+            except ValueError:
+                data_atendimento = date.today()
+        else:
+            data_atendimento = date.today()
+
         form = RelatoSessaoForm(request.POST)
         
         if form.is_valid():
             descricao = form.cleaned_data['descricao']
-            prontuario = get_object_or_404(Prontuario, idprontuario=id_prontuario, estagiario=request.user)
+
+            prontuario = get_object_or_404(
+                Prontuario, 
+                idprontuario=id_prontuario, 
+                estagiario=request.user
+            )
+
+            # 🚨 BLOQUEIO DE PRONTUÁRIO ARQUIVADO
+            if not prontuario.status_ativo:
+                messages.error(request, "Não é possível adicionar evolução a um prontuário arquivado.")
+                return redirect('estagiario:consulta_inscritos')
 
             try:
                 Evolucao.objects.create(
@@ -217,7 +237,7 @@ def adicionar_evolucao(request):
             except Exception as e:
                 messages.error(request, f"Erro ao registrar evolução: {str(e)}")
         else:
-             messages.error(request, "Erro no formulário. Verifique os dados.")
+            messages.error(request, "Erro no formulário. Verifique os dados.")
 
     return redirect('estagiario:consulta_inscritos')
 
@@ -372,8 +392,14 @@ def dados_inscrito_detalhe(request, tipo, pk):
 def nova_evolucao(request, pk):
     prontuario = get_object_or_404(Prontuario, idprontuario=pk)
     
+    # 🔐 Permissão
     if prontuario.estagiario != request.user:
         messages.error(request, "Você não tem permissão para registrar evolução neste prontuário.")
+        return redirect('estagiario:consulta_inscritos')
+
+    # 🚨 BLOQUEIO DE ARQUIVADO
+    if not prontuario.status_ativo:
+        messages.error(request, "Este prontuário está arquivado e não pode receber evoluções.")
         return redirect('estagiario:consulta_inscritos')
 
     if request.method == 'POST':
@@ -382,13 +408,23 @@ def nova_evolucao(request, pk):
             evolucao = form.save(commit=False)
             evolucao.prontuario = prontuario
             evolucao.data_atendimento = date.today()
-            evolucao.save()
-            messages.success(request, "Evolução registrada com sucesso!")
-            return redirect('estagiario:dados_inscrito', pk=prontuario.pk)
+
+            try:
+                evolucao.save()
+                messages.success(request, "Evolução registrada com sucesso!")
+                return redirect('estagiario:dados_inscrito', pk=prontuario.pk)
+            except Exception as e:
+                messages.error(request, f"Erro ao salvar evolução: {str(e)}")
+        else:
+            messages.error(request, "Erro no formulário. Verifique os dados.")
     else:
         form = RelatoSessaoForm()
 
-    paciente_nome = prontuario.paciente_comunidade.nomeinscrito if prontuario.paciente_comunidade else prontuario.paciente_convenio.nomeinscrito
+    paciente_nome = (
+        prontuario.paciente_comunidade.nomeinscrito 
+        if prontuario.paciente_comunidade 
+        else prontuario.paciente_convenio.nomeinscrito
+    )
 
     context = {
         'prontuario': prontuario,
