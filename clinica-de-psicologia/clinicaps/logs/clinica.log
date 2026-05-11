@@ -1470,3 +1470,284 @@ WARNING 2026-04-29 15:40:53,685 basehttp "GET /login/verificar-codigo/imagens/Lo
 WARNING 2026-04-29 15:40:53,685 basehttp "GET /login/verificar-codigo/imagens/youtube.png HTTP/1.1" 404 6539
 WARNING 2026-04-29 15:40:53,688 basehttp "GET /login/verificar-codigo/imagens/instagram.png HTTP/1.1" 404 6545
 WARNING 2026-04-29 15:40:53,701 basehttp "GET /login/verificar-codigo/imagens/x.png HTTP/1.1" 404 6521
+WARNING 2026-04-29 15:55:13,440 basehttp "GET /login/verificar-codigo/imagens/Logo1.png HTTP/1.1" 404 6533
+WARNING 2026-04-29 15:55:13,440 basehttp "GET /login/verificar-codigo/imagens/Logo2.png HTTP/1.1" 404 6533
+WARNING 2026-04-29 15:55:13,456 basehttp "GET /login/verificar-codigo/imagens/contato.png HTTP/1.1" 404 6539
+WARNING 2026-04-29 15:55:13,468 basehttp "GET /login/verificar-codigo/imagens/facebook.png HTTP/1.1" 404 6542
+WARNING 2026-04-29 15:55:13,488 basehttp "GET /login/verificar-codigo/imagens/youtube.png HTTP/1.1" 404 6539
+WARNING 2026-04-29 15:55:13,492 basehttp "GET /login/verificar-codigo/imagens/x.png HTTP/1.1" 404 6521
+WARNING 2026-04-29 15:55:13,492 basehttp "GET /login/verificar-codigo/imagens/instagram.png HTTP/1.1" 404 6545
+WARNING 2026-04-29 15:55:24,931 basehttp "GET /login/verificar-codigo/imagens/youtube.png HTTP/1.1" 404 6539
+WARNING 2026-04-29 15:55:24,932 basehttp "GET /login/verificar-codigo/imagens/instagram.png HTTP/1.1" 404 6545
+WARNING 2026-04-29 15:55:24,933 basehttp "GET /login/verificar-codigo/imagens/Logo2.png HTTP/1.1" 404 6533
+WARNING 2026-04-29 15:55:24,934 basehttp "GET /login/verificar-codigo/imagens/contato.png HTTP/1.1" 404 6539
+WARNING 2026-04-29 15:55:24,934 basehttp "GET /login/verificar-codigo/imagens/facebook.png HTTP/1.1" 404 6542
+WARNING 2026-04-29 15:55:24,935 basehttp "GET /login/verificar-codigo/imagens/Logo1.png HTTP/1.1" 404 6533
+WARNING 2026-04-29 15:55:24,953 basehttp "GET /login/verificar-codigo/imagens/x.png HTTP/1.1" 404 6521
+WARNING 2026-04-29 15:58:03,800 basehttp "GET /login/verificar-codigo/imagens/contato.png HTTP/1.1" 404 6539
+WARNING 2026-04-29 15:58:03,801 basehttp "GET /login/verificar-codigo/imagens/facebook.png HTTP/1.1" 404 6542
+WARNING 2026-04-29 15:58:03,802 basehttp "GET /login/verificar-codigo/imagens/Logo1.png HTTP/1.1" 404 6533
+WARNING 2026-04-29 15:58:03,802 basehttp "GET /login/verificar-codigo/imagens/youtube.png HTTP/1.1" 404 6539
+WARNING 2026-04-29 15:58:03,804 basehttp "GET /login/verificar-codigo/imagens/instagram.png HTTP/1.1" 404 6545
+WARNING 2026-04-29 15:58:03,805 basehttp "GET /login/verificar-codigo/imagens/Logo2.png HTTP/1.1" 404 6533
+WARNING 2026-04-29 15:58:03,816 basehttp "GET /login/verificar-codigo/imagens/x.png HTTP/1.1" 404 6521
+WARNING 2026-04-29 15:58:10,742 basehttp "GET /login/verificar-codigo/imagens/Logo1.png HTTP/1.1" 404 6533
+WARNING 2026-04-29 15:58:10,807 basehttp "GET /login/verificar-codigo/imagens/contato.png HTTP/1.1" 404 6539
+WARNING 2026-04-29 15:58:10,808 basehttp "GET /login/verificar-codigo/imagens/x.png HTTP/1.1" 404 6521
+WARNING 2026-04-29 15:58:10,808 basehttp "GET /login/verificar-codigo/imagens/facebook.png HTTP/1.1" 404 6542
+WARNING 2026-04-29 15:58:10,808 basehttp "GET /login/verificar-codigo/imagens/instagram.png HTTP/1.1" 404 6545
+WARNING 2026-04-29 15:58:10,810 basehttp "GET /login/verificar-codigo/imagens/Logo2.png HTTP/1.1" 404 6533
+WARNING 2026-04-29 15:58:10,811 basehttp "GET /login/verificar-codigo/imagens/youtube.png HTTP/1.1" 404 6539
+WARNING 2026-04-29 15:58:52,505 basehttp "GET /login/verificar-codigo/imagens/Logo2.png HTTP/1.1" 404 6533
+WARNING 2026-04-29 15:58:52,518 basehttp "GET /login/verificar-codigo/imagens/youtube.png HTTP/1.1" 404 6539
+WARNING 2026-04-29 15:58:52,519 basehttp "GET /login/verificar-codigo/imagens/Logo1.png HTTP/1.1" 404 6533
+WARNING 2026-04-29 15:58:52,519 basehttp "GET /login/verificar-codigo/imagens/facebook.png HTTP/1.1" 404 6542
+WARNING 2026-04-29 15:58:52,519 basehttp "GET /login/verificar-codigo/imagens/contato.png HTTP/1.1" 404 6539
+WARNING 2026-04-29 15:58:52,529 basehttp "GET /login/verificar-codigo/imagens/instagram.png HTTP/1.1" 404 6545
+WARNING 2026-04-29 15:58:52,531 basehttp "GET /login/verificar-codigo/imagens/x.png HTTP/1.1" 404 6521
+ERROR 2026-05-05 15:42:25,085 log Internal Server Error: /login/redirect/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/app/usuarios/views.py", line 48, in redirect_after_login
+    return render(request, 'dashboard_padrao.html', {'user': user})
+  File "/usr/local/lib/python3.13/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/usr/local/lib/python3.13/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/usr/local/lib/python3.13/site-packages/django/template/loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: dashboard_padrao.html
+ERROR 2026-05-05 15:42:25,101 basehttp "GET /login/redirect/ HTTP/1.1" 500 91413
+ERROR 2026-05-05 15:42:29,901 log Internal Server Error: /login/redirect/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/app/usuarios/views.py", line 48, in redirect_after_login
+    return render(request, 'dashboard_padrao.html', {'user': user})
+  File "/usr/local/lib/python3.13/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/usr/local/lib/python3.13/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/usr/local/lib/python3.13/site-packages/django/template/loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: dashboard_padrao.html
+ERROR 2026-05-05 15:42:29,908 basehttp "GET /login/redirect/ HTTP/1.1" 500 91579
+ERROR 2026-05-05 15:42:40,299 log Internal Server Error: /login/redirect/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python3.13/site-packages/django/contrib/auth/decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/app/usuarios/views.py", line 48, in redirect_after_login
+    return render(request, 'dashboard_padrao.html', {'user': user})
+  File "/usr/local/lib/python3.13/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/usr/local/lib/python3.13/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/usr/local/lib/python3.13/site-packages/django/template/loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: dashboard_padrao.html
+ERROR 2026-05-05 15:42:40,306 basehttp "GET /login/redirect/ HTTP/1.1" 500 91564
+WARNING 2026-05-06 13:47:20,619 basehttp "GET /accounts/login/?next=/login/redirect/ HTTP/1.1" 404 4423
+WARNING 2026-05-11 13:59:27,247 basehttp "GET /favicon.ico HTTP/1.1" 404 4389
+ERROR 2026-05-11 14:08:10,316 log Internal Server Error: /login/cadastro/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/psycopg/cursor.py", line 97, in execute
+    raise ex.with_traceback(None)
+psycopg.errors.UniqueViolation: duplicate key value violates unique constraint "usuario_cpf_key"
+DETAIL:  Key (cpf)=() already exists.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/django/views/generic/base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/app/usuarios/views.py", line 84, in post
+    form.save()
+    ~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/site-packages/django/forms/models.py", line 554, in save
+    self.instance.save()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/site-packages/django/contrib/auth/base_user.py", line 62, in save
+    super().save(*args, **kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/django/db/models/base.py", line 892, in save
+    self.save_base(
+    ~~~~~~~~~~~~~~^
+        using=using,
+        ^^^^^^^^^^^^
+    ...<2 lines>...
+        update_fields=update_fields,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/django/db/models/base.py", line 998, in save_base
+    updated = self._save_table(
+        raw,
+    ...<4 lines>...
+        update_fields,
+    )
+  File "/usr/local/lib/python3.13/site-packages/django/db/models/base.py", line 1161, in _save_table
+    results = self._do_insert(
+        cls._base_manager, using, fields, returning_fields, raw
+    )
+  File "/usr/local/lib/python3.13/site-packages/django/db/models/base.py", line 1202, in _do_insert
+    return manager._insert(
+           ~~~~~~~~~~~~~~~^
+        [self],
+        ^^^^^^^
+    ...<3 lines>...
+        raw=raw,
+        ^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/django/db/models/query.py", line 1847, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/django/db/models/sql/compiler.py", line 1836, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/django/db/backends/utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/usr/local/lib/python3.13/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/usr/local/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/psycopg/cursor.py", line 97, in execute
+    raise ex.with_traceback(None)
+django.db.utils.IntegrityError: duplicate key value violates unique constraint "usuario_cpf_key"
+DETAIL:  Key (cpf)=() already exists.
+ERROR 2026-05-11 14:08:10,337 basehttp "POST /login/cadastro/ HTTP/1.1" 500 185057
+ERROR 2026-05-11 14:23:53,306 log Internal Server Error: /login/cadastro/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/psycopg/cursor.py", line 97, in execute
+    raise ex.with_traceback(None)
+psycopg.errors.NotNullViolation: null value in column "cpf" of relation "usuario" violates not-null constraint
+DETAIL:  Failing row contains (8, , null, f, 65478, Pedro, null, pedro65432@unieuro.com.br, , null, , null, 9, 2026-05-11 17:23:53.05539+00, null, f, t, f, null, AVANCADO, 3, null, usuarios/fotos_perfil/ChatGPT_Image_5_de_mai_ySGlKjt._de_2026_14...).
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/django/views/generic/base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/app/usuarios/views.py", line 84, in post
+    form.save()
+    ~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/site-packages/django/forms/models.py", line 554, in save
+    self.instance.save()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/site-packages/django/contrib/auth/base_user.py", line 62, in save
+    super().save(*args, **kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/django/db/models/base.py", line 892, in save
+    self.save_base(
+    ~~~~~~~~~~~~~~^
+        using=using,
+        ^^^^^^^^^^^^
+    ...<2 lines>...
+        update_fields=update_fields,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/django/db/models/base.py", line 998, in save_base
+    updated = self._save_table(
+        raw,
+    ...<4 lines>...
+        update_fields,
+    )
+  File "/usr/local/lib/python3.13/site-packages/django/db/models/base.py", line 1161, in _save_table
+    results = self._do_insert(
+        cls._base_manager, using, fields, returning_fields, raw
+    )
+  File "/usr/local/lib/python3.13/site-packages/django/db/models/base.py", line 1202, in _do_insert
+    return manager._insert(
+           ~~~~~~~~~~~~~~~^
+        [self],
+        ^^^^^^^
+    ...<3 lines>...
+        raw=raw,
+        ^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/django/db/models/query.py", line 1847, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/django/db/models/sql/compiler.py", line 1836, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/django/db/backends/utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/usr/local/lib/python3.13/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/usr/local/lib/python3.13/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/usr/local/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/psycopg/cursor.py", line 97, in execute
+    raise ex.with_traceback(None)
+django.db.utils.IntegrityError: null value in column "cpf" of relation "usuario" violates not-null constraint
+DETAIL:  Failing row contains (8, , null, f, 65478, Pedro, null, pedro65432@unieuro.com.br, , null, , null, 9, 2026-05-11 17:23:53.05539+00, null, f, t, f, null, AVANCADO, 3, null, usuarios/fotos_perfil/ChatGPT_Image_5_de_mai_ySGlKjt._de_2026_14...).
+ERROR 2026-05-11 14:23:53,325 basehttp "POST /login/cadastro/ HTTP/1.1" 500 186731

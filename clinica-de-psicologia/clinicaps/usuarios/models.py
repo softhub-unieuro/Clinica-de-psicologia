@@ -55,7 +55,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     # --- IDENTIFICAÇÃO ---
     matricula = models.CharField(max_length=20, unique=True, verbose_name='Matrícula/RA')
     nome_completo = models.CharField(max_length=255, verbose_name="Nome Completo")
-    cpf = models.CharField(max_length=14, unique=True, verbose_name="CPF") 
+    cpf = models.CharField(max_length=14, unique=True, null=True, blank=True, verbose_name="CPF") 
     email = models.EmailField(unique=True, verbose_name="E-mail Institucional") # Mudamos de email_institucional para email para facilitar
     telefone = models.CharField(max_length=20, verbose_name="Telefone")
     data_nascimento = models.DateField(verbose_name='Data de nascimento', null=True, blank=True)
