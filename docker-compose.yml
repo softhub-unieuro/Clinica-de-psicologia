@@ -38,10 +38,10 @@ services:
       - DATABASE_HOST=db
     ports:
       - "8000:8000"
-    volumes:
-      # Monta o código localmente para hot-reload em desenvolvimento
-      - ./clinica-de-psicologia/clinicaps:/app
-      - staticfiles:/app/staticfiles
+    # volumes:
+    #   # Monta o código localmente para hot-reload em desenvolvimento
+    #   - ./clinica-de-psicologia/clinicaps:/app
+    #   - staticfiles:/app/staticfiles
     depends_on:
       db:
         condition: service_healthy
