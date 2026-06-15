@@ -5,7 +5,8 @@ from .views import (
     FinalizarCicloView, 
     DesvincularDevolverView,
     VincularInscritoView,
-    ListaProntuariosArquivadosView
+    ListaProntuariosArquivadosView,
+    DesarquivarProntuarioView  # Importe a nova view
 )
 
 app_name = 'supervisor'
@@ -17,4 +18,5 @@ urlpatterns = [
     path('desvincular-devolver/<int:pk>/', DesvincularDevolverView.as_view(), name='desvincular_devolver'),
     path('vincular-inscrito/<str:tipo>/<int:pk>/', VincularInscritoView.as_view(), name='vincular_inscrito'),
     path('arquivados/', ListaProntuariosArquivadosView.as_view(), name='lista_arquivados'),
+    path('desarquivar/<int:pk>/', DesarquivarProntuarioView.as_view(), name='desarquivar_prontuario'),  # Nova rota
 ]

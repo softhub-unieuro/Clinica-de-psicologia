@@ -26,7 +26,7 @@
     <div class="flex justify-between items-center mb-8">
         <h2 class="text-xl font-bold text-uni-blue">Dados do Inscrito</h2>
         <div class="flex gap-2">
-            {% if user.cargo == 'SUPER' or user.cargo == 'RESP_TEC' %}
+            {% if user.cargo == 'SUPER' or user.cargo == 'RESP_TEC' or user.cargo == 'COORD' %}
                 {% if prontuario %}
                     <!-- Ações para Inscritos Vinculados -->
                     <!-- Verifica se o prontuário está ativo (não arquivado) -->
@@ -42,10 +42,19 @@
                             </button>
                         </form>
                     {% else %}
-                        <!-- Se estiver arquivado, mostra apenas um badge informativo -->
-                        <span class="bg-gray-500 text-white font-bold py-2 px-4 rounded shadow-sm flex items-center gap-2">
-                            <i class="fa fa-archive"></i> Ciclo Finalizado
-                        </span>
+                        <!-- Se estiver arquivado, mostra badge e botão de desarquivar -->
+                        <div class="flex gap-2">
+                            <span class="bg-gray-500 text-white font-bold py-2 px-4 rounded shadow-sm flex items-center gap-2">
+                                <i class="fa fa-archive"></i> Ciclo Finalizado
+                            </span>
+                            
+                            <form action="{% url 'supervisor:desarquivar_prontuario' prontuario.pk %}" method="post" onsubmit="return confirmDesarquivar();" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow-sm transition-colors flex items-center gap-2">
+                                    <i class="fa fa-archive"></i> Desarquivar
+                                </button>
+                            </form>
+                        </div>
                     {% endif %}
                 {% else %}
                     <!-- Ações para Inscritos Disponíveis (Sem Vínculo) -->
@@ -213,6 +222,10 @@
             jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
         };
         html2pdf().set(opt).from(element).save();
+    }
+    
+    function confirmDesarquivar() {
+        return confirm('Tem certeza que deseja DESARQUIVAR este prontuário?\n\nO paciente voltará a ficar ativo no sistema e poderá ser vinculado novamente.');
     }
     
     {% if prontuario %}

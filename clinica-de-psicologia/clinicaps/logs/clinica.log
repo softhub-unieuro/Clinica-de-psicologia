@@ -1751,3 +1751,31 @@ Traceback (most recent call last):
 django.db.utils.IntegrityError: null value in column "cpf" of relation "usuario" violates not-null constraint
 DETAIL:  Failing row contains (8, , null, f, 65478, Pedro, null, pedro65432@unieuro.com.br, , null, , null, 9, 2026-05-11 17:23:53.05539+00, null, f, t, f, null, AVANCADO, 3, null, usuarios/fotos_perfil/ChatGPT_Image_5_de_mai_ySGlKjt._de_2026_14...).
 ERROR 2026-05-11 14:23:53,325 basehttp "POST /login/cadastro/ HTTP/1.1" 500 186731
+WARNING 2026-05-11 14:55:49,397 basehttp "GET /accounts/login/?next=/estagiario/consulta-inscritos/ HTTP/1.1" 404 4438
+WARNING 2026-05-13 13:18:43,104 basehttp "GET /favicon.ico HTTP/1.1" 404 4389
+WARNING 2026-05-20 08:10:37,949 basehttp "GET /accounts/login/?next=/estagiario/dados-inscrito/12/ HTTP/1.1" 404 4437
+WARNING 2026-05-27 14:05:16,392 basehttp "GET /favicon.ico HTTP/1.1" 404 4389
+WARNING 2026-05-27 14:50:31,660 basehttp "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 4500
+WARNING 2026-06-15 13:38:38,073 basehttp "GET /favicon.ico HTTP/1.1" 404 4389
+ERROR 2026-06-15 14:23:47,822 log Internal Server Error: /supervisor/desarquivar/15/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/lib/python3.13/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/django/contrib/auth/mixins.py", line 135, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/site-packages/django/views/generic/base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/app/Supervisor/views.py", line 48, in post
+    messages.success(request, f"Prontuário do paciente {prontuario.get_paciente_nome()} foi desarquivado com sucesso!")
+                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Prontuario' object has no attribute 'get_paciente_nome'
+ERROR 2026-06-15 14:23:47,838 basehttp "POST /supervisor/desarquivar/15/ HTTP/1.1" 500 88044

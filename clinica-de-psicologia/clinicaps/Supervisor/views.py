@@ -26,6 +26,37 @@ class SupervisorOrRTRequiredMixin(UserPassesTestMixin):
         messages.error(self.request, "Acesso negado. Apenas Supervisores e Responsáveis Técnicas podem acessar esta área.")
         return redirect('login')
 
+
+# NOVO MIXIN PARA COORDENADOR, SUPERVISOR E RESP_TEC
+class SupervisorRTCoordRequiredMixin(UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.is_authenticated and self.request.user.cargo in ['SUPER', 'RESP_TEC', 'COORD']
+    
+    def handle_no_permission(self):
+        messages.error(self.request, "Acesso negado. Apenas Supervisores, Responsáveis Técnicas e Coordenadores podem acessar esta área.")
+        return redirect('login')
+
+
+class DesarquivarProntuarioView(LoginRequiredMixin, SupervisorRTCoordRequiredMixin, View):
+    def post(self, request, pk):
+        prontuario = get_object_or_404(Prontuario, pk=pk)
+        
+        # Reativar o prontuário
+        prontuario.status_ativo = True
+        prontuario.save()
+        
+        # Corrigido: obtém o nome do paciente corretamente
+        nome_paciente = "Paciente"
+        if prontuario.paciente_comunidade:
+            nome_paciente = prontuario.paciente_comunidade.nomeinscrito
+        elif prontuario.paciente_convenio:
+            nome_paciente = prontuario.paciente_convenio.nomeinscrito
+        
+        messages.success(request, f"Prontuário do paciente {nome_paciente} foi desarquivado com sucesso!")
+        
+        # Redirecionar de volta para a lista de arquivados
+        return redirect('supervisor:lista_arquivados')
+    
 class DashboardSupervisorView(LoginRequiredMixin, SupervisorRequiredMixin, ListView):
     model = Usuario
     template_name = 'dashboard_supervisor.html'
@@ -151,7 +182,9 @@ class VincularInscritoView(LoginRequiredMixin, SupervisorOrRTRequiredMixin, View
             return redirect('resptecn:dashboard')
         return redirect('supervisor:dashboard')
 
-class ListaProntuariosArquivadosView(LoginRequiredMixin, SupervisorOrRTRequiredMixin, ListView):
+
+# ALTERADO: Agora usa o novo mixin que inclui COORD
+class ListaProntuariosArquivadosView(LoginRequiredMixin, SupervisorRTCoordRequiredMixin, ListView):
     model = Prontuario
     template_name = 'arquivados.html'
     context_object_name = 'arquivados'
@@ -165,6 +198,7 @@ class ListaProntuariosArquivadosView(LoginRequiredMixin, SupervisorOrRTRequiredM
         if self.request.user.cargo == 'SUPER':
             # Supervisor sees their own archived cases (where they were supervisor)
             queryset = queryset.filter(supervisor=self.request.user)
+        
+        # Coordenador (COORD) e RESP_TEC podem ver TODOS os arquivados (sem filtro adicional)
             
         return queryset.order_by('-idprontuario')
-
